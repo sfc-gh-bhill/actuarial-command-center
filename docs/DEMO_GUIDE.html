@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actuarial Command Center — Demonstration Guide</title>
+<style>
+  /* ===== FONTS ===== */
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
+
+  /* ===== CSS VARIABLES ===== */
+  :root {
+    --snow-blue: #29B5E8;
+    --snow-dark: #11567F;
+    --snow-darker: #0A3A56;
+    --snow-light: #E8F7FC;
+    --snow-ice: #F0FAFF;
+    --accent-red: #E74C3C;
+    --accent-amber: #F39C12;
+    --accent-green: #27AE60;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A5568;
+    --text-muted: #718096;
+    --border-light: #E2E8F0;
+    --bg-white: #FFFFFF;
+    --bg-gray: #F7FAFC;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+    --radius: 10px;
+  }
+
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    background: var(--bg-gray);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== PAGE SETUP ===== */
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  @media print {
+    .no-print, .print-warning, .print-btn, .nav-sidebar, .back-to-top { display: none !important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: white; font-size: 11pt; }
+    .container { max-width: 100%; padding: 0; box-shadow: none; }
+    h1, h2, h3, h4 { page-break-after: avoid !important; }
+    section, .card, .callout, .info-box, table, .talking-point, .act-section { 
+      break-inside: avoid !important; 
+      page-break-inside: avoid !important;
+    }
+    .page-break { page-break-before: always !important; break-before: page !important; }
+    a[href]:after { content: none !important; }
+    a { text-decoration: none; color: inherit; }
+    .cover-page { min-height: auto; padding: 2rem 0; }
+    .cover-page h1 { font-size: 28pt; }
+  }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--bg-white);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* ===== COVER PAGE ===== */
+  .cover-page {
+    background: linear-gradient(135deg, var(--snow-darker) 0%, var(--snow-dark) 40%, var(--snow-blue) 100%);
+    color: white;
+    padding: 4rem 3rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .cover-page::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(41,181,232,0.15) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .cover-snowflake {
+    font-size: 80px;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-page h1 {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-subtitle {
+    font-size: 20px;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    font-size: 14px;
+    opacity: 0.85;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-meta-item {
+    background: rgba(255,255,255,0.12);
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .cover-divider {
+    width: 80px;
+    height: 3px;
+    background: rgba(255,255,255,0.4);
+    margin: 2rem auto;
+    border-radius: 2px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-audience {
+    font-size: 14px;
+    opacity: 0.75;
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+  }
+
+  /* ===== PRINT WARNING ===== */
+  .print-warning {
+    text-align: center;
+    padding: 1.2rem;
+    background: #FEF3C7;
+    border-radius: 0;
+    border-bottom: 2px solid #F59E0B;
+  }
+  .print-warning p {
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    color: #92400E;
+    font-size: 14px;
+  }
+  .print-btn {
+    background: var(--snow-dark);
+    color: white;
+    border: none;
+    padding: 0.6rem 2rem;
+    border-radius: 6px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .print-btn:hover { background: var(--snow-blue); }
+
+  /* ===== CONTENT AREA ===== */
+  .content { padding: 2.5rem 3rem; }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--snow-blue);
+  }
+  .section-number {
+    background: var(--snow-blue);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--snow-dark);
+    line-height: 1.2;
+  }
+  .section-header .section-subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  /* ===== ACT HEADERS ===== */
+  .act-banner {
+    background: linear-gradient(135deg, var(--snow-dark), var(--snow-blue));
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .act-banner::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 120px;
+    height: 120px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .act-banner h2 {
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 0.3rem;
+  }
+  .act-banner .act-page {
+    font-size: 13px;
+    opacity: 0.8;
+    font-weight: 400;
+  }
+  .act-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    font-size: 13px;
+  }
+  .act-meta-item {
+    background: rgba(255,255,255,0.15);
+    padding: 0.25rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 400;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--snow-dark);
+    margin-bottom: 0.6rem;
+  }
+
+  /* ===== TALKING POINTS ===== */
+  .talking-point {
+    background: var(--snow-ice);
+    border-left: 4px solid var(--snow-blue);
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-style: italic;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+  .talking-point::before {
+    content: '💬 ';
+    font-style: normal;
+  }
+  .talking-point strong, .talking-point em {
+    color: var(--snow-dark);
+  }
+
+  /* ===== TRANSITION CALLOUTS ===== */
+  .transition {
+    background: linear-gradient(90deg, var(--snow-ice), transparent);
+    border-left: 4px solid var(--accent-green);
+    padding: 0.8rem 1.2rem;
+    margin: 1.5rem 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-weight: 700;
+    color: var(--accent-green);
+    font-size: 14px;
+  }
+  .transition::before {
+    content: '>> ';
+  }
+
+  /* ===== ELEVATOR PITCH ===== */
+  .elevator-pitch {
+    background: linear-gradient(135deg, #1a1a2e 0%, var(--snow-darker) 100%);
+    color: white;
+    padding: 2rem 2.5rem;
+    border-radius: var(--radius);
+    margin: 1.5rem 0;
+    font-size: 16px;
+    line-height: 1.8;
+    position: relative;
+    box-shadow: var(--shadow-md);
+  }
+  .elevator-pitch::before {
+    content: '"';
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    font-size: 60px;
+    opacity: 0.15;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+
+  /* ===== CHECKLIST ===== */
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  .checklist li {
+    padding: 0.6rem 0 0.6rem 2rem;
+    position: relative;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 0;
+    font-size: 18px;
+    color: var(--snow-blue);
+  }
+
+  /* ===== SHOW ITEMS (numbered) ===== */
+  .show-list {
+    counter-reset: show-item;
+    list-style: none;
+    padding: 0;
+  }
+  .show-list > li {
+    counter-increment: show-item;
+    padding: 0.8rem 0 0.8rem 2.8rem;
+    position: relative;
+    border-bottom: 1px dashed var(--border-light);
+  }
+  .show-list > li:last-child { border-bottom: none; }
+  .show-list > li::before {
+    content: counter(show-item);
+    position: absolute;
+    left: 0;
+    top: 0.75rem;
+    background: var(--snow-blue);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .show-list li strong {
+    color: var(--snow-dark);
+  }
+
+  /* ===== KEY MESSAGES ===== */
+  .key-message {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    background: var(--bg-gray);
+    border-radius: var(--radius);
+  }
+  .key-message-num {
+    background: var(--snow-dark);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .key-message strong {
+    color: var(--snow-dark);
+  }
+
+  /* ===== CLOSING QUOTE ===== */
+  .closing-quote {
+    background: linear-gradient(135deg, var(--snow-darker), var(--snow-dark));
+    color: white;
+    padding: 2.5rem;
+    border-radius: var(--radius);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.7;
+    margin: 2rem 0;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* ===== OBJECTION TABLE ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 14px;
+  }
+  thead th {
+    background: var(--snow-dark);
+    color: white;
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-weight: 700;
+  }
+  thead th:first-child { border-radius: var(--radius) 0 0 0; }
+  thead th:last-child { border-radius: 0 var(--radius) 0 0; }
+  tbody td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: var(--bg-gray); }
+  tbody td:first-child { 
+    font-weight: 700; 
+    color: var(--accent-red);
+    white-space: nowrap;
+    width: 30%;
+  }
+
+  /* ===== INVENTORY TABLE ===== */
+  .inventory-table thead th {
+    background: var(--snow-blue);
+    font-size: 13px;
+  }
+  .inventory-table td {
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .inventory-table td:nth-child(3) {
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
+    color: var(--snow-dark);
+  }
+
+  /* ===== INTERACTIVE DEMO BOX ===== */
+  .interactive-box {
+    background: #FFF8E1;
+    border: 2px solid var(--accent-amber);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1.2rem 0;
+  }
+  .interactive-box h4 {
+    color: var(--accent-amber);
+    margin-bottom: 0.8rem;
+  }
+  .interactive-box h4::before {
+    content: '🎯 ';
+  }
+  .interactive-box ul {
+    margin-left: 1.2rem;
+  }
+  .interactive-box li {
+    margin-bottom: 0.4rem;
+  }
+
+  /* ===== WOW BADGE ===== */
+  .wow-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent-amber), #E67E22);
+    color: white;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  /* ===== SECTION DIVIDER ===== */
+  .section-divider {
+    height: 4px;
+    background: linear-gradient(90deg, var(--snow-blue), var(--snow-dark), var(--snow-blue));
+    margin: 2.5rem 0;
+    border-radius: 2px;
+    opacity: 0.3;
+  }
+
+  /* ===== FOOTER ===== */
+  .doc-footer {
+    text-align: center;
+    padding: 2rem 3rem;
+    background: var(--bg-gray);
+    border-top: 1px solid var(--border-light);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .doc-footer .snowflake-mark {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ===== BACK TO TOP ===== */
+  .back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--snow-dark);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 20px;
+    box-shadow: var(--shadow-md);
+    transition: background 0.2s;
+    z-index: 100;
+  }
+  .back-to-top:hover { background: var(--snow-blue); }
+
+  /* ===== TOC ===== */
+  .toc {
+    background: var(--bg-gray);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+  .toc h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--snow-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--snow-blue);
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: toc-item;
+    padding: 0;
+    columns: 2;
+    column-gap: 2rem;
+  }
+  .toc li {
+    counter-increment: toc-item;
+    padding: 0.35rem 0;
+    break-inside: avoid;
+  }
+  .toc a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .toc a:hover { color: var(--snow-blue); }
+  .toc a::before {
+    content: counter(toc-item, upper-roman) ". ";
+    font-weight: 700;
+    color: var(--snow-blue);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .content { padding: 1.5rem; }
+    .cover-page { padding: 2rem 1.5rem; }
+    .cover-page h1 { font-size: 28px; }
+    .toc ol { columns: 1; }
+    .act-meta { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="top">
+
+<!-- ==================== COVER PAGE ==================== -->
+<section class="cover-page">
+  <div class="cover-snowflake">&#10052;</div>
+  <h1>Actuarial Command Center</h1>
+  <p class="cover-subtitle">End-to-End Demonstration Guide</p>
+  <div class="cover-divider"></div>
+  <div class="cover-meta">
+    <span class="cover-meta-item">Snowflake AI Data Cloud</span>
+    <span class="cover-meta-item">Streamlit in Snowflake</span>
+    <span class="cover-meta-item">Version 1.0</span>
+    <span class="cover-meta-item">February 2026</span>
+  </div>
+  <p class="cover-audience">
+    Prepared for: Chief Actuaries &bull; CFOs &bull; VP of Analytics &bull; Health Plan Leadership<br>
+    Duration: 25&ndash;35 minutes (or modular by page)
+  </p>
+</section>
+
+<!-- ==================== PRINT WARNING ==================== -->
+<div class="print-warning no-print">
+  <p>Before printing: Go to Print &rarr; More Settings &rarr; Uncheck &ldquo;Headers and footers&rdquo;</p>
+  <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<div class="content">
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h3>Guide Contents</h3>
+  <ol>
+    <li><a href="#setup">Pre-Demo Setup</a></li>
+    <li><a href="#pitch">Elevator Pitch</a></li>
+    <li><a href="#act1">The Front Door &mdash; Mission Control</a></li>
+    <li><a href="#act2">The Financial Cockpit &mdash; Executive Summary</a></li>
+    <li><a href="#act3">The Crystal Ball &mdash; Margin Forecast</a></li>
+    <li><a href="#act4">The RAF Score Whisperer &mdash; Risk Adjustment</a></li>
+    <li><a href="#act5">Follow the Money &mdash; Claims Analytics</a></li>
+    <li><a href="#act6">The Piggy Bank &mdash; IBNR Reserves</a></li>
+    <li><a href="#act7">The Art of the Deal &mdash; Contract Repricing</a></li>
+    <li><a href="#act8">The Smoke Detector &mdash; Trend Surveillance</a></li>
+    <li><a href="#act9">Ask It Anything &mdash; Intelligence Agent</a></li>
+    <li><a href="#act10">The Blueprint &mdash; Architecture</a></li>
+    <li><a href="#closing">Closing Argument</a></li>
+    <li><a href="#objections">Objection Handling</a></li>
+    <li><a href="#inventory">Snowflake Object Inventory</a></li>
+  </ol>
+</div>
+
+<!-- ==================== PRE-DEMO SETUP ==================== -->
+<section id="setup">
+  <div class="section-header">
+    <div class="section-number">&#10003;</div>
+    <div>
+      <h2>Pre-Demo Setup Checklist</h2>
+    </div>
+  </div>
+
+  <ul class="checklist">
+    <li>Log in to Snowflake at <code>https://app.snowflake.com/YOUR_ORG/YOUR_ACCOUNT/</code></li>
+    <li>Navigate to <strong>Streamlit Apps &gt; ACTUARIAL_DEMO.GOLD.ACTUARIAL_COMMAND_CENTER</strong></li>
+    <li>Clear any saved scenarios in Contract Repricing (fresh start)</li>
+    <li>Ensure warehouse <code>ACTUARIAL_WH</code> is active (auto-resumes on query)</li>
+    <li>Have a second browser tab open to Snowsight for &ldquo;peek behind the curtain&rdquo; moments</li>
+    <li>Optional: Give audience follow-along credentials &mdash; User: <code>PKOVALIK</code> &nbsp;|&nbsp; Password: <code>ActuarialDemo2026!!</code> &nbsp;|&nbsp; Role: <code>ACTUARIAL_DEMO_USER</code></li>
+  </ul>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== ELEVATOR PITCH ==================== -->
+<section id="pitch">
+  <div class="section-header">
+    <div class="section-number">&#9733;</div>
+    <div>
+      <h2>The 60-Second Elevator Pitch</h2>
+      <span class="section-subtitle">Memorize this</span>
+    </div>
+  </div>
+
+  <div class="elevator-pitch">
+    What if your actuarial team's entire workflow &mdash; from claims surveillance to IBNR reserving to contract negotiation &mdash; lived in one governed application, powered by the same AI that Fortune 500 companies use for fraud detection, but purpose-built for health plan actuaries? No more spreadsheet archaeology. No more &ldquo;let me pull that from the data warehouse and get back to you next Tuesday.&rdquo; We built that. It runs on Snowflake. And it takes about 4 seconds to answer questions that used to take 4 days.
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ==================== ACT I ==================== -->
+<section id="act1" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act I: &ldquo;The Front Door&rdquo;</h2>
+    <span class="act-page">Mission Control &mdash; Home Page</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;4 minutes</span>
+      <span class="act-meta-item">Vibe: Confident, establishing credibility</span>
+    </div>
+  </div>
+
+  <h3 style="color:var(--snow-dark); margin-bottom:1rem;">What to Show</h3>
+  <ol class="show-list">
+    <li><strong>Hero Banner</strong> &mdash; The gradient header with &ldquo;Actuarial Command Center&rdquo; and shimmer animation. This isn't just a title; it's setting the tone that this is a <em>product</em>, not a proof-of-concept.</li>
+
+    <li><strong>Proactive BH Alert</strong> &mdash; A red alert banner surfaces <em>before anyone asks</em>: &ldquo;Behavioral Health Unit Cost Anomaly &mdash; Texas.&rdquo;
+      <div class="talking-point">Notice how nobody had to run a query to find this. The system detected a cost anomaly using Cortex ML &mdash; Snowflake's built-in machine learning &mdash; and surfaced it the moment you opened the app. It's like having a really diligent junior actuary who never sleeps, never takes PTO, and never accidentally overwrites the production spreadsheet.</div>
+    </li>
+
+    <li><strong>Mission Control KPIs</strong> &mdash; Four tiles: MLR (87.2%), Operating Margin, Avg Cost PMPM, Total Claims. These pull from a governed Semantic View &mdash; one source of truth.
+      <div class="talking-point">These aren't cached from last quarter. These are <em>live</em> &mdash; computed from a Dynamic Table pipeline that refreshes automatically. If a claim adjudicates at 2 AM, this number updates. No ETL jobs to babysit.</div>
+    </li>
+
+    <li><strong>Quick Actions</strong> &mdash; Show &ldquo;Draft CFO Briefing.&rdquo; Click it. An email composer appears with pre-populated insights and a professional tone.
+      <div class="talking-point">Your CFO asks for a financial summary at 4:47 PM on a Friday. Instead of panic, you click one button, select which insights to include, and send a professionally drafted email in 30 seconds. That's not automation &mdash; that's <em>liberation</em>.</div>
+    </li>
+
+    <li><strong>Demo Workflow Strip</strong> &mdash; Four steps guiding the recommended demo path. The app is self-aware enough to onboard its own users.</li>
+  </ol>
+
+  <div class="transition">That's the front door. Now let's walk through what each room in this house actually does.</div>
+</section>
+
+<!-- ==================== ACT II ==================== -->
+<section id="act2" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act II: &ldquo;The Financial Cockpit&rdquo;</h2>
+    <span class="act-page">Executive Summary &mdash; Page 1</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;4 minutes</span>
+      <span class="act-meta-item">Vibe: Authoritative, single pane of glass</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>Top-Line KPIs</strong> &mdash; MLR, Operating Margin, Avg Cost PMPM, Total Claims with full context.</li>
+
+    <li><strong>Anomaly Alerts</strong> &mdash; Cortex ML-detected anomalies with severity badges. Texas BH spike flagged as &ldquo;CRITICAL.&rdquo;
+      <div class="talking-point">Traditional actuarial workflows discover anomalies when someone eyeballs a spreadsheet and says &ldquo;that number looks funny.&rdquo; This system runs anomaly detection models continuously. It's the difference between a smoke detector and hoping you smell something burning.</div>
+    </li>
+
+    <li><strong>MLR by Line of Business</strong> &mdash; Tiles: Individual (91.2% &mdash; above ACA threshold), Small Group (84.1%), Large Group (82.7%), Health Plan Co.re Advantage (88.5%). Color-coded status badges.</li>
+
+    <li><strong>MLR Trend Chart</strong> &mdash; 12-month rolling trend with ACA threshold lines at 80% and 85%.
+      <div class="talking-point">See that Individual line crossing 80%? That's not just a trend &mdash; that's a rebate trigger. Under the ACA, if your Individual MLR exceeds 80%, you owe money back to members. This chart isn't decorative; it's an early warning system for a regulatory obligation that can cost millions.</div>
+    </li>
+
+    <li><strong>Margin by State</strong> &mdash; Color-coded bar chart. Texas is underperforming.</li>
+
+    <li><strong>Action Bar</strong> &mdash; &ldquo;Email Summary&rdquo; and &ldquo;Navigate to Repricing&rdquo; buttons &mdash; embedded workflow.</li>
+
+    <li><strong>Technical Mode Toggle</strong> &mdash; Flip to &ldquo;Technical.&rdquo; Show MLR Governance SQL and ACA Rebate Compliance Check.
+      <div class="talking-point">Every visualization has a &ldquo;show me the SQL&rdquo; button. When a regulator asks &ldquo;how did you calculate this?&rdquo; the answer shouldn't be &ldquo;let me find the analyst who built the spreadsheet three years ago.&rdquo; The answer is right here &mdash; governed, version-controlled, and auditable.</div>
+    </li>
+  </ol>
+
+  <div class="transition">So we can see the current state. But actuaries don't get paid for hindsight &mdash; they get paid for foresight. Let's look forward.</div>
+</section>
+
+<!-- ==================== ACT III ==================== -->
+<section id="act3" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act III: &ldquo;The Crystal Ball&rdquo;</h2>
+    <span class="act-page">Margin Forecast &mdash; Page 2</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;4 minutes</span>
+      <span class="act-meta-item">Vibe: Forward-looking, slightly nerdy</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>ACA MLR Thresholds Banner</strong> &mdash; Individual/Small Group 80%, Large Group 85%. Always visible because these aren't suggestions &mdash; they're law.</li>
+
+    <li><strong>Current MLR by LOB</strong> &mdash; Metric cards with target comparison. Individual is 6.2 ppts above target.</li>
+
+    <li><strong>IBNR Adjustment Factors</strong> &mdash; Interactive completion factor inputs. Change a factor and watch the projection update.
+      <div class="talking-point">This is where it gets fun for the actuaries in the room. Those completion factors? You can adjust them right here. No round-trip to the data team. Just slide, see, decide. It's like a flight simulator for your reserve estimates.</div>
+    </li>
+
+    <li><strong>MLR Trend by LOB</strong> &mdash; Multi-line chart showing each LOB's trajectory. Individual is diverging upward.</li>
+
+    <li><strong>Margin Waterfall</strong> &mdash; Bridge chart from premium to margin, showing where money leaks out.</li>
+
+    <li><strong>Year-End Projection</strong> &mdash; 6-month annualized view &mdash; the &ldquo;will we hit our targets?&rdquo; answer.</li>
+
+    <li><strong>Sidebar Filters</strong> &mdash; Change LOB, change State. Everything re-renders instantly.
+      <div class="talking-point">Every chart on this page responds to the filters in real-time. Want to see just Florida Health Plan Co.re Advantage? Two clicks. In a traditional environment, each of those would be a separate report request.</div>
+    </li>
+  </ol>
+
+  <div class="transition">MLR is driven by two things: what you collect (premium) and what you pay (claims). Premium is set. But the &ldquo;what you pay&rdquo; side? That's where risk adjustment enters the chat.</div>
+</section>
+
+<!-- ==================== ACT IV ==================== -->
+<section id="act4" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act IV: &ldquo;The RAF Score Whisperer&rdquo;</h2>
+    <span class="act-page">Risk Adjustment &mdash; Page 3</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;4 minutes</span>
+      <span class="act-meta-item">Vibe: Technical but accessible</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>CMS-HCC v28 Banner</strong> &mdash; CMS updated the risk adjustment model with constrained coefficients &mdash; directly changes revenue.
+      <div class="talking-point">CMS-HCC v28 is like the IRS changing the tax code, but for health insurance. Every diagnosis code maps to a coefficient that determines how much CMS pays you per member. Get the coding wrong, and you're leaving money on the table. Get it intentionally wrong, and the DOJ comes knocking. This page helps you get it <em>exactly</em> right.</div>
+    </li>
+
+    <li><strong>KPIs</strong> &mdash; Avg RAF Score (1.12), Premium PMPM, Risk-Adjusted PMPM, Annual Revenue Impact. That revenue impact number makes CFOs lean forward.</li>
+
+    <li><strong>RAF Distribution by LOB</strong> &mdash; Bar chart with baseline 1.0 line. Above 1.0 = sicker (and more expensive) than average.</li>
+
+    <li><strong>CMS-HCC v28 Coefficient Reference</strong> &mdash; Color-coded: constrained (red) vs. unconstrained (blue). Diabetes HCC 36/37/38 = 0.302, CHF HCC 224/225/226 = 0.431.
+      <div class="talking-point">See the red bars? Those are the constrained coefficients &mdash; CMS is saying &ldquo;we think these were being over-coded, so we're capping them.&rdquo; If your revenue projections don't account for this constraint, you're building your budget on a number that CMS has already told you is wrong.</div>
+    </li>
+
+    <li><strong>Flag Coding Gaps</strong> &mdash; Shows where documentation may be incomplete, representing potential revenue recovery.</li>
+
+    <li><strong>RAF Score by State + HCC Coding Rate</strong> &mdash; Geographic variation in coding completeness.</li>
+  </ol>
+
+  <div class="transition">So we know our risk scores. We know our MLR. But where exactly is the money going? Let's look at the claims.</div>
+</section>
+
+<!-- ==================== ACT V ==================== -->
+<section id="act5" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act V: &ldquo;Follow the Money&rdquo;</h2>
+    <span class="act-page">Claims Analytics &mdash; Page 4</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;4 minutes</span>
+      <span class="act-meta-item">Vibe: Detective story, finding signal in noise</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>KPIs</strong> &mdash; Total Claims (433K+), Total Paid, Avg Per Claim, Median Per Claim, High-Cost %. That high-cost percentage is the canary in the coal mine.</li>
+
+    <li><strong>Proactive Alert</strong> &mdash; If high-cost claims exceed 5%, a warning appears automatically.</li>
+
+    <li><strong>Four Tabs:</strong>
+      <div class="card" style="margin-top:0.8rem;">
+        <h4>a. Cost Distribution</h4>
+        <p>Histograms by service category. Show the long tail on Inpatient.</p>
+        <div class="talking-point">See that tail stretching to the right on Inpatient? Those are your $200K+ cases. They're 3% of claims and 22% of cost. In actuarial terms, that's where your stop-loss attachment point lives.</div>
+        <h4 style="margin-top:1rem;">b. Service Category Mix</h4>
+        <p>Pie chart + bar chart. Behavioral Health is growing faster than other categories.</p>
+        <h4 style="margin-top:1rem;">c. High-Cost Analysis</h4>
+        <p>Claims over $50K. Top 20 table with member details.</p>
+        <h4 style="margin-top:1rem;">d. Claims Lag</h4>
+        <p>Average and median processing time by category. BH has the longest lag &mdash; matters for IBNR.</p>
+      </div>
+    </li>
+
+    <li><strong>&ldquo;Draft Stop-Loss Alert&rdquo;</strong> &mdash; One-click email to your reinsurer with pre-populated high-cost data.
+      <div class="talking-point">Your stop-loss carrier calls and asks for a large-loss report. Instead of spending two hours pulling data, you click &ldquo;Draft Stop-Loss Alert,&rdquo; review the pre-built email, and send. The data is governed, timestamped, and sourced from the same pipeline that feeds everything else.</div>
+    </li>
+
+    <li><strong>Sidebar Filters</strong> &mdash; Service Category, State, Network (IN/OUT). Filtering to OUT-of-network reveals cost outliers.</li>
+  </ol>
+
+  <div class="transition">We found the expensive claims. Now let's make sure we have enough money set aside to pay the ones we haven't seen yet.</div>
+</section>
+
+<!-- ==================== ACT VI ==================== -->
+<section id="act6" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act VI: &ldquo;The Piggy Bank&rdquo;</h2>
+    <span class="act-page">IBNR Reserves &mdash; Page 5</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;4 minutes</span>
+      <span class="act-meta-item">Vibe: Serious, with &ldquo;we made chain-ladder cool&rdquo;</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>IBNR Methodology Banner</strong> &mdash; Chain-ladder method, completion factors, run-off triangle.
+      <div class="talking-point">IBNR &mdash; Incurred But Not Reported. It's the actuarial equivalent of knowing you ate something questionable but not knowing the bill yet. The chain-ladder method uses historical claim development patterns to estimate what's still coming. It's been the gold standard for decades, and we've automated it end-to-end.</div>
+    </li>
+
+    <li><strong>KPIs</strong> &mdash; Total IBNR Reserve, Paid to Date, Estimated Ultimate, Immature Months.</li>
+
+    <li><strong>Three Tabs:</strong>
+      <div class="card" style="margin-top:0.8rem;">
+        <h4>a. IBNR Reserve Waterfall</h4>
+        <p>Stacked bar chart with maturity colors (green = mature, amber = developing, red = immature).</p>
+        <h4 style="margin-top:1rem;">b. Completion Factor S-Curve</h4>
+        <p>The classic actuarial visualization with threshold lines at 70%, 90%, 98%.</p>
+        <div class="talking-point">This S-curve is every actuary's best friend. At 6 months, you've seen 70% of claims. At 12 months, 90%. At 18 months, 98%. It's like watching bread rise &mdash; you know it's going to get there, the question is how fast.</div>
+        <h4 style="margin-top:1rem;">c. Run-Off Triangle Heatmap</h4>
+        <p>Interactive heatmap of the classic development triangle. Colors indicate development speed.</p>
+      </div>
+    </li>
+
+    <li><strong>&ldquo;Reserve Opinion Package&rdquo;</strong> &mdash; Generates a 6-component audit package: methodology documentation, data quality certification, BF comparison, sensitivity analysis, management discussion points, and sign-off template.
+      <div class="talking-point">That button just generated what would normally take an actuarial team two weeks to compile for an external audit. Six components, all sourced from governed data.</div>
+    </li>
+
+    <li><strong>IBNR Forecast Detail Table</strong> &mdash; Exportable, sortable, filterable raw numbers.</li>
+  </ol>
+
+  <div class="transition">We know what we owe. Now the big question: can we pay less? That's where contract repricing comes in &mdash; and this is where the demo gets <em>really</em> fun.</div>
+</section>
+
+<!-- ==================== ACT VII ==================== -->
+<section id="act7" class="act-section page-break">
+  <div class="act-banner" style="background: linear-gradient(135deg, #E67E22, var(--snow-dark));">
+    <h2>Act VII: &ldquo;The Art of the Deal&rdquo; <span class="wow-badge">The Wow Moment</span></h2>
+    <span class="act-page">Contract Repricing &mdash; Page 6</span>
+    <div class="act-meta">
+      <span class="act-meta-item">5&ndash;7 minutes</span>
+      <span class="act-meta-item">Vibe: Showstopper, audience participation</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>&ldquo;The Wow Moment&rdquo; Banner</strong> &mdash; The page introduces itself as the wow moment. Own it.
+      <div class="talking-point">Okay, this is the page where people usually put their phones down. Here's the scenario: Your network team says the Texas hospital wants a rate increase. The CFO wants to know what happens if you push back with a 200 basis point reduction. In a traditional environment, that analysis takes a week. Here, it takes about 4 seconds. Watch.</div>
+    </li>
+
+    <li><strong>Scenario Parameters</strong> &mdash; Five inline controls:
+      <div class="card" style="margin-top:0.5rem;">
+        <p><strong>Target State:</strong> TX &nbsp;|&nbsp; <strong>BPS Adjustment:</strong> -500 to +500 &nbsp;|&nbsp; <strong>Service Scope:</strong> All / IP / OP</p>
+        <p><strong>IP Pass-Through:</strong> 0&ndash;100% &nbsp;|&nbsp; <strong>OP Pass-Through:</strong> 0&ndash;100%</p>
+      </div>
+    </li>
+
+    <li><strong>Rate Factor Strip</strong> &mdash; Shows <code>0.9800x</code> with color coding, updating live as you move sliders.
+      <div class="talking-point">Five parameters, infinite combinations. This isn't a one-size-fits-all model &mdash; it's a flight simulator for contract negotiations.</div>
+    </li>
+
+    <li><strong>Before vs. After KPIs</strong> &mdash; Current MLR, Repriced MLR, Projected Savings, Scenario Counter.</li>
+  </ol>
+
+  <div class="interactive-box">
+    <h4>Interactive Demo Moment &mdash; Move the Sliders!</h4>
+    <ul>
+      <li>Start at <strong>-200 bps</strong>. Show the savings.</li>
+      <li>Move to <strong>-350 bps</strong>. Watch savings increase.</li>
+      <li>Change to <strong>&ldquo;Inpatient Only.&rdquo;</strong> Watch outpatient drop out.</li>
+      <li>Adjust <strong>IP Pass-Through to 75%</strong>. Savings decrease proportionally.</li>
+    </ul>
+    <div class="talking-point" style="margin-top:1rem; margin-bottom:0;">Every time you move a slider, a stored procedure fires against the governed data in Snowflake. Same data. Same governance. Same audit trail. But now you're running what-if scenarios in real-time.</div>
+  </div>
+
+  <ol class="show-list" start="5">
+    <li><strong>Save Scenario (Up to 3)</strong> &mdash; Save as &ldquo;Scenario A,&rdquo; change parameters, save &ldquo;B,&rdquo; then &ldquo;C.&rdquo;</li>
+
+    <li><strong>Scenario Comparison</strong> &mdash; Side-by-side KPI cards and grouped bar chart.
+      <div class="talking-point">Three scenarios, side by side. In the old world, each would be a separate analyst request. Here, you built all three in 90 seconds.</div>
+    </li>
+
+    <li><strong>Negotiation Brief</strong> &mdash; Click it in the action bar. A full professional document appears:
+      <div class="card" style="margin-top:0.5rem;">
+        <p>&bull; Executive Summary with financial impact<br>
+        &bull; Contract clauses retrieved via <strong>Cortex Search</strong> (RAG over indexed contracts)<br>
+        &bull; Financial impact table by service category<br>
+        &bull; Market benchmark comparison (regional avg, percentile, MLR, YoY trend)<br>
+        &bull; Five tailored negotiation talking points<br>
+        &bull; Data governance footer citing the Semantic View source</p>
+      </div>
+      <div class="talking-point">The system just wrote a negotiation brief. It pulled contract clauses using Cortex Search &mdash; Snowflake's RAG engine querying indexed provider agreements. It generated market benchmarks. It wrote five talking points. And at the bottom, it tells you exactly where every number came from. This is AI you can actually trust because the data provenance is baked in.</div>
+    </li>
+
+    <li><strong>Category Impact / Monthly Forecast / Details Tabs</strong> &mdash; Waterfall chart, monthly trend with shaded savings area, raw JSON for technical audience.</li>
+
+    <li><strong>Technical Mode</strong> &mdash; Show the REPRICE_CONTRACT stored procedure SQL.</li>
+  </ol>
+
+  <div class="transition">We built the scenario, compared the options, and generated the brief. But how did we know to focus on Texas? That's where Trend Surveillance comes in.</div>
+</section>
+
+<!-- ==================== ACT VIII ==================== -->
+<section id="act8" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act VIII: &ldquo;The Smoke Detector&rdquo;</h2>
+    <span class="act-page">Trend Surveillance &mdash; Page 7</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;4 minutes</span>
+      <span class="act-meta-item">Vibe: The system found this before we did</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>Cortex ML Anomaly Alerts</strong> &mdash; Texas BH alert front and center, marked CRITICAL. Includes % deviation, observed vs. expected unit cost, contract reference (CPT 90837 at $177.43), root cause: 4.2% mid-year price adjustment clause.
+      <div class="talking-point">Cortex ML analyzed 18 months of cost data, built a time-series model for every state-and-category combination, and flagged Texas Behavioral Health as statistically anomalous. It didn't just say &ldquo;costs went up.&rdquo; It said &ldquo;costs went up 8% more than the model predicted, and here's the contract clause that caused it.&rdquo; That's not a dashboard &mdash; that's an investigation report.</div>
+    </li>
+
+    <li><strong>Action Bar</strong> &mdash; &ldquo;Email Trend Report,&rdquo; &ldquo;Export Surveillance Data,&rdquo; &ldquo;Create Alert Rule.&rdquo;</li>
+
+    <li><strong>Create Alert Rule</strong> &mdash; Configure state, category, and deviation threshold.
+      <div class="talking-point">In production, this alert rule would configure a Snowflake Task &mdash; a serverless scheduled job &mdash; that monitors for anomalies and sends notifications. No cron jobs. No third-party scheduling tools. Just Snowflake, watching your data, 24/7.</div>
+    </li>
+
+    <li><strong>Cost Trend by Service Category</strong> &mdash; Multi-line chart. Behavioral Health (orange) diverges upward in recent months.</li>
+
+    <li><strong>Texas BH Deep Dive</strong> &mdash; Dedicated chart with CPT 90837 baseline ($154.29, blue dashed), contract rate ($177.43, red dotted), anomaly period shaded in red, root cause analysis card, and recommended action linking to Contract Repricing.
+      <div class="talking-point">This is the &ldquo;aha&rdquo; moment. Detection flagged it. Deep dive shows when costs diverged. Root cause explains <em>why</em>. Recommended action sends you to Contract Repricing. End-to-end workflow &mdash; detection to action &mdash; without leaving the application.</div>
+    </li>
+
+    <li><strong>Observed vs. Pricing Assumptions</strong> &mdash; Data table comparing actuals to pricing assumptions.</li>
+
+    <li><strong>Technical Mode</strong> &mdash; Show the Cortex ML ANOMALY_DETECTION SQL.</li>
+  </ol>
+
+  <div class="transition">We've gone from detection to analysis to scenario modeling. But what if you just want to ask a question in plain English?</div>
+</section>
+
+<!-- ==================== ACT IX ==================== -->
+<section id="act9" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act IX: &ldquo;Ask It Anything&rdquo;</h2>
+    <span class="act-page">Intelligence Agent &mdash; Page 8</span>
+    <div class="act-meta">
+      <span class="act-meta-item">3&ndash;5 minutes</span>
+      <span class="act-meta-item">Vibe: Futuristic, conversational</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>Empty State</strong> &mdash; Three quick-action tiles: &ldquo;Reserve Adequacy,&rdquo; &ldquo;Rate Filing,&rdquo; &ldquo;MLR Rebate.&rdquo;</li>
+
+    <li><strong>Chat Interface</strong> &mdash; Type a question. Suggested:
+      <div class="card" style="margin-top:0.5rem;">
+        <p>&bull; &ldquo;What is our current MLR by line of business?&rdquo;<br>
+        &bull; &ldquo;Why is Texas behavioral health cost trending up?&rdquo;<br>
+        &bull; &ldquo;What contract clauses affect our BH reimbursement rates?&rdquo;<br>
+        &bull; &ldquo;Generate a reserve adequacy summary for Q4&rdquo;</p>
+      </div>
+      <div class="talking-point">This is Snowflake Cortex Agents &mdash; an AI system that queries your governed data, searches indexed contracts, and generates answers grounded in facts, not hallucinations. Ask about MLR, and it queries the Semantic View. Ask about contract terms, and it searches via Cortex Search. Ask for a summary, and it uses Cortex Complete with Claude 3.5 Sonnet.</div>
+    </li>
+
+    <li><strong>Show RAG in Action</strong> &mdash; Ask about contract clauses. The agent retrieves chunks from <code>AGENTS.CONTRACT_SEARCH_SERVICE</code> and cites them.
+      <div class="talking-point">Notice the citations. The agent isn't making this up &mdash; it's pulling from indexed contract documents. This is Retrieval-Augmented Generation running entirely inside Snowflake. Your contract data never leaves your security perimeter. No API calls to external services. The AI runs where the data lives.</div>
+    </li>
+
+    <li><strong>Conversation Memory</strong> &mdash; Ask a follow-up referencing the previous answer. The agent maintains context.</li>
+
+    <li><strong>Technical Mode</strong> &mdash; Show Cortex Search and Cortex Complete function calls.</li>
+  </ol>
+
+  <div class="transition">One more thing. Let's peek under the hood and see how all of this is connected.</div>
+</section>
+
+<!-- ==================== ACT X ==================== -->
+<section id="act10" class="act-section page-break">
+  <div class="act-banner">
+    <h2>Act X: &ldquo;The Blueprint&rdquo;</h2>
+    <span class="act-page">Architecture &mdash; Page 9</span>
+    <div class="act-meta">
+      <span class="act-meta-item">2&ndash;3 minutes</span>
+      <span class="act-meta-item">Vibe: Technical credibility</span>
+    </div>
+  </div>
+
+  <ol class="show-list">
+    <li><strong>Overview Mode</strong> &mdash; Simplified architecture: Source Data &rarr; RAW &rarr; SILVER &rarr; GOLD &rarr; ML/Analytics &rarr; Consumers.</li>
+
+    <li><strong>Detailed Mode</strong> &mdash; Every node, every arrow. Source systems, RAW tables, SILVER Dynamic Tables, GOLD Dynamic Tables + Semantic View, ML models, Cortex Agents, consumer applications.</li>
+
+    <li><strong>Zoom Slider</strong> &mdash; Scale 50%&ndash;150%. Large teams can zoom in on specific sections.</li>
+
+    <li><strong>Flow Highlighting</strong> &mdash; The showstopper:
+      <div class="card" style="margin-top:0.5rem;">
+        <p>&bull; Select &ldquo;Flow: Executive Summary&rdquo; &mdash; relevant nodes glow, rest dims to 12% opacity.<br>
+        &bull; Select &ldquo;Flow: Contract Repricing&rdquo; &mdash; different path: stored proc, ML, Cortex Search.<br>
+        &bull; Select &ldquo;Flow: Intelligence Agent&rdquo; &mdash; Semantic View + Cortex Search path.</p>
+      </div>
+      <div class="talking-point">This isn't a static diagram. Pick any page from the dropdown, and the architecture highlights exactly which pipeline components power it. That's full data lineage, visualized interactively, for non-technical stakeholders.</div>
+    </li>
+
+    <li><strong>Hover Effects</strong> &mdash; Glow effect and tooltip with details on any node.</li>
+  </ol>
+</section>
+
+<!-- ==================== CLOSING ==================== -->
+<section id="closing" class="page-break">
+  <div class="section-header">
+    <div class="section-number" style="background: var(--snow-dark);">&#10004;</div>
+    <div>
+      <h2>The Closing Argument</h2>
+      <span class="section-subtitle">2 minutes &mdash; land these five messages</span>
+    </div>
+  </div>
+
+  <div class="key-message">
+    <div class="key-message-num">1</div>
+    <div><strong>Single Source of Truth:</strong> Every number on every page comes from the same governed Semantic View. There is no &ldquo;my spreadsheet says different.&rdquo; There's one truth.</div>
+  </div>
+
+  <div class="key-message">
+    <div class="key-message-num">2</div>
+    <div><strong>Detection to Action:</strong> Trend Surveillance <em>detects</em> the anomaly. Executive Summary <em>quantifies</em> the impact. Contract Repricing <em>models</em> the response. Intelligence Agent <em>answers</em> the follow-ups. Complete analytical loop &mdash; no context switching.</div>
+  </div>
+
+  <div class="key-message">
+    <div class="key-message-num">3</div>
+    <div><strong>AI You Can Trust:</strong> Cortex ML, Cortex Search, Cortex Complete &mdash; all running inside Snowflake's security perimeter. No data leaves. Every answer is grounded in governed data. Every calculation is auditable.</div>
+  </div>
+
+  <div class="key-message">
+    <div class="key-message-num">4</div>
+    <div><strong>Speed:</strong> What used to take days now takes seconds. What used to require five tools now requires one. What used to need a team of analysts now needs one actuary with a browser.</div>
+  </div>
+
+  <div class="key-message">
+    <div class="key-message-num">5</div>
+    <div><strong>The Snowflake Difference:</strong> The data pipeline, ML models, AI agents, governed analytics, and interactive UI all run on <em>one platform</em>. One security model. One governance framework. That's not an incremental improvement &mdash; that's a paradigm shift.</div>
+  </div>
+
+  <div class="closing-quote">
+    &ldquo;We didn't build a dashboard. We built an actuarial operating system.<br>
+    And it runs on the only platform that could make it possible &mdash;<br>
+    Snowflake AI Data Cloud.&rdquo;
+  </div>
+</section>
+
+<!-- ==================== OBJECTION HANDLING ==================== -->
+<section id="objections" class="page-break">
+  <div class="section-header">
+    <div class="section-number" style="background: var(--accent-red);">!</div>
+    <div>
+      <h2>Objection Handling</h2>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Objection</th>
+        <th>Response</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>&ldquo;We already have Power BI dashboards.&rdquo;</td>
+        <td>Power BI shows you what happened. This shows you what happened, why it happened, what to do about it, and drafts the email to tell your boss. Also, the AI runs <em>inside</em> the data platform &mdash; no data movement, no governance gaps.</td>
+      </tr>
+      <tr>
+        <td>&ldquo;Our actuaries use Excel/R/Python.&rdquo;</td>
+        <td>So do ours &mdash; this isn't replacing those tools. It's replacing the <em>glue</em> between them: the manual data pulls, the copy-paste between systems, the &ldquo;which version is current?&rdquo; conversations.</td>
+      </tr>
+      <tr>
+        <td>&ldquo;This is synthetic data.&rdquo;</td>
+        <td>Yes, intentionally. The data conforms to APCD-CDL v3.0.1. The architecture, pipeline, ML models, and AI agents are production-ready. Swap in your data, and everything works &mdash; that's the point of governed data pipelines.</td>
+      </tr>
+      <tr>
+        <td>&ldquo;How long to build something like this?&rdquo;</td>
+        <td>The platform components &mdash; Dynamic Tables, Cortex ML, Semantic Views, Streamlit &mdash; are all native Snowflake. No third-party tools to install. No infrastructure to manage. The question isn't build time; it's <em>time to first insight</em>.</td>
+      </tr>
+      <tr>
+        <td>&ldquo;What about data security?&rdquo;</td>
+        <td>Everything runs inside Snowflake. RBAC (role-based access control), network policies, data masking, audit logging &mdash; all native. The AI models run where the data lives. Nothing is sent to external APIs. This is the most governed AI you can deploy.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ==================== OBJECT INVENTORY ==================== -->
+<section id="inventory" class="page-break">
+  <div class="section-header">
+    <div class="section-number" style="background: var(--text-muted);">&#9881;</div>
+    <div>
+      <h2>Snowflake Object Inventory</h2>
+      <span class="section-subtitle">Database: ACTUARIAL_DEMO</span>
+    </div>
+  </div>
+
+  <table class="inventory-table">
+    <thead>
+      <tr>
+        <th>Schema</th>
+        <th>Object</th>
+        <th>Type</th>
+        <th>Rows</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>GOLD</td><td>SYNTH_MEMBER_ELIGIBILITY</td><td>Table</td><td>10,000</td></tr>
+      <tr><td>GOLD</td><td>SYNTH_MEDICAL_CLAIMS</td><td>Table</td><td>433,155</td></tr>
+      <tr><td>GOLD</td><td>SYNTH_PHARMACY_CLAIMS</td><td>Table</td><td>200,000</td></tr>
+      <tr><td>GOLD</td><td>SYNTH_CAPITATION_PAYMENTS</td><td>Table</td><td>164,459</td></tr>
+      <tr><td>GOLD</td><td>SYNTH_PHARMACY_REBATES</td><td>Table</td><td>200</td></tr>
+      <tr><td>GOLD</td><td>CLAIMS_LAG_TRIANGLE</td><td>Table</td><td>234</td></tr>
+      <tr><td>GOLD</td><td>HCC_REFERENCE</td><td>Table</td><td>12</td></tr>
+      <tr><td>SILVER</td><td>MEMBER_ELIGIBILITY_CLEAN</td><td>Dynamic Table</td><td>10,000</td></tr>
+      <tr><td>SILVER</td><td>MEDICAL_CLAIMS_CLEAN</td><td>Dynamic Table</td><td>386,185</td></tr>
+      <tr><td>GOLD</td><td>FINANCIAL_SUMMARY</td><td>Dynamic Table</td><td>3,924</td></tr>
+      <tr><td>GOLD</td><td>TREND_SURVEILLANCE</td><td>Dynamic Table</td><td>3,924</td></tr>
+      <tr><td>GOLD</td><td>RISK_SCORE_SUMMARY</td><td>Dynamic Table</td><td>452</td></tr>
+      <tr><td>GOLD</td><td>IBNR_DEVELOPMENT</td><td>Dynamic Table</td><td>234</td></tr>
+      <tr><td>GOLD</td><td>ACTUARIAL_FINANCIAL_TRUTH</td><td>Semantic View</td><td>&mdash;</td></tr>
+      <tr><td>ANALYTICS</td><td>TREND_TIMESERIES</td><td>View</td><td>&mdash;</td></tr>
+      <tr><td>ANALYTICS</td><td>COST_TREND_FORECAST</td><td>Table</td><td>1,875</td></tr>
+      <tr><td>ANALYTICS</td><td>IBNR_FORECAST</td><td>Table</td><td>24</td></tr>
+      <tr><td>ANALYTICS</td><td>ANOMALY_ALERTS</td><td>Table</td><td>2,777</td></tr>
+      <tr><td>AGENTS</td><td>CONTRACT_CHUNKS</td><td>Table</td><td>9</td></tr>
+      <tr><td>AGENTS</td><td>CONTRACT_SEARCH_SERVICE</td><td>Cortex Search</td><td>9 indexed</td></tr>
+      <tr><td>AGENTS</td><td>INVOKE_INTELLIGENCE_AGENT</td><td>Procedure</td><td>&mdash;</td></tr>
+      <tr><td>GOLD</td><td>REPRICE_CONTRACT</td><td>Procedure</td><td>&mdash;</td></tr>
+      <tr><td>GOLD</td><td>ACTUARIAL_COMMAND_CENTER</td><td>Streamlit</td><td>10 pages</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div><!-- /content -->
+
+<!-- ==================== FOOTER ==================== -->
+<div class="doc-footer">
+  <span class="snowflake-mark">&#10052;</span>
+  Snowflake AI Data Cloud &bull; Solution Engineering<br>
+  Generated: February 2026 &bull; Version 1.0<br>
+  <span style="margin-top:0.3rem; display:inline-block;">Contact your Snowflake SE for additional questions</span>
+</div>
+
+</div><!-- /container -->
+
+<!-- BACK TO TOP -->
+<a href="#top" class="back-to-top no-print" title="Back to top">&uarr;</a>
+
+</body>
+</html>

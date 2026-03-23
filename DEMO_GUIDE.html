@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actuarial Command Center — 15-Minute Demo Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+    /* ---- RESET & BASE ---- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+        --snow-blue: #29B5E8; --snow-dark: #11567F; --accent: #667eea;
+        --green: #00D4AA; --bg: #0E1117; --card: #161B22; --text: #E2E8F0;
+        --muted: #94A3B8; --dim: #475569; --border: rgba(41,181,232,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+    a { color: var(--snow-blue); text-decoration: none; }
+    strong { color: #F1F5F9; }
+
+    /* ---- PRINT ---- */
+    @media print {
+        @page { size: letter; margin: 0.6in 0.5in; }
+        body { background: white !important; color: #1E293B !important; font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .no-print { display: none !important; }
+        .page-break { page-break-before: always; }
+        .cover { min-height: auto !important; padding: 2.5rem 1rem !important; background: linear-gradient(135deg,#0E1117 0%,#11567F 40%,#29B5E8 100%) !important; }
+        .nav-blade, .nav-toggle, .section-nav { display: none !important; }
+        .main-content { margin-left: 0 !important; }
+        .container { max-width: 100%; padding: 0; }
+
+        /* Force all text dark on white background */
+        p, li, span, div, td, th, label, .step-detail, .step-content,
+        .card, .card td, .card p, .card li, .card span,
+        .checklist-item, .act-header-text .act-sub,
+        .timeline-label, .timeline-time, .metric-box .label,
+        .footer, .footer p { color: #1E293B !important; }
+        strong { color: #0F172A !important; }
+        h2 { color: var(--snow-dark) !important; }
+        h3 { color: #0F172A !important; }
+        h4 { color: #334155 !important; }
+        a { color: #11567F !important; }
+        code { background: #F1F5F9 !important; color: #0F172A !important; }
+
+        /* Cards on white */
+        .card { break-inside: avoid; border: 1px solid #CBD5E1 !important; background: #F8FAFC !important; }
+        .card-highlight { background: #EFF6FF !important; border-color: #93C5FD !important; }
+
+        /* Tables */
+        th { background: #11567F !important; color: white !important; }
+        td { border-bottom: 1px solid #E2E8F0 !important; color: #1E293B !important; }
+        tr:nth-child(even) { background: #F8FAFC !important; }
+
+        /* Metric boxes */
+        .metric-box { background: #F8FAFC !important; border: 1px solid #CBD5E1 !important; }
+        .metric-box .value { color: #11567F !important; }
+        .metric-box .label { color: #475569 !important; }
+        .metric-box::before { background: linear-gradient(90deg, #11567F, #0E9AA7) !important; }
+        .metric-grid { grid-template-columns: repeat(5, 1fr); }
+
+        /* Timeline */
+        .timeline { margin: 1rem 0; }
+        .timeline-dot { background: #11567F !important; border-color: #11567F !important; color: white !important; }
+        .timeline::before { background: #11567F !important; }
+        .timeline-label { color: #1E293B !important; }
+        .timeline-time { color: #475569 !important; }
+
+        /* Callout boxes — dark text on tinted backgrounds */
+        .talk-track, .insight, .cta-box, .warning-box { break-inside: avoid; }
+        .talk-track { background: #EEF2FF !important; border-left-color: #6366F1 !important; color: #312E81 !important; }
+        .talk-track::before { color: #4338CA !important; }
+        .insight { background: #ECFDF5 !important; border-left-color: #10B981 !important; color: #064E3B !important; }
+        .insight::before { color: #065F46 !important; }
+        .cta-box { background: #FFFBEB !important; border-left-color: #F59E0B !important; color: #78350F !important; }
+        .cta-box::before { color: #92400E !important; }
+        .warning-box { background: #FEF2F2 !important; border-left-color: #EF4444 !important; color: #7F1D1D !important; }
+        .warning-box::before { color: #991B1B !important; }
+
+        /* Demo steps */
+        .step-action { color: #11567F !important; }
+        .step-num { background: #11567F !important; color: white !important; }
+
+        /* Pills */
+        .pill { border: 1px solid currentColor; }
+        .pill-blue { color: #11567F !important; }
+        .pill-green { color: #065F46 !important; }
+        .pill-purple { color: #4338CA !important; }
+        .pill-orange { color: #92400E !important; }
+
+        /* Time badge */
+        .time-badge { background: #E0F2FE !important; color: #0C4A6E !important; }
+
+        /* Checklist */
+        .checklist-item { color: #1E293B !important; }
+        .checklist-item::before { color: #11567F !important; }
+
+        /* Cover meta stays light (on dark gradient background) */
+        .cover-meta p { color: #CBD5E1 !important; }
+        .cover .tagline { color: #CBD5E1 !important; }
+        .cover .subtitle { color: #94A3B8 !important; }
+    }
+
+    /* ---- NAV BLADE ---- */
+    .nav-blade { position: fixed; top: 0; left: 0; width: 220px; height: 100vh; background: #0D1117; border-right: 1px solid var(--border); padding: 1.5rem 1rem; z-index: 100; overflow-y: auto; transition: transform 0.3s ease; }
+    .nav-blade.collapsed { transform: translateX(-220px); }
+    .nav-blade .brand { text-align: center; margin-bottom: 1rem; }
+    .nav-blade .snowflake-icon { font-size: 2rem; color: var(--snow-blue); }
+    .nav-blade h3 { font-size: 0.9rem; letter-spacing: 3px; color: white; margin: 0.3rem 0 0; }
+    .nav-blade .brand p { font-size: 0.65rem; color: var(--muted); letter-spacing: 2px; }
+    .nav-blade .divider { width: 40px; height: 2px; background: var(--snow-blue); margin: 0.75rem auto; }
+    .nav-blade .doc-title { font-size: 0.85rem; font-weight: 700; color: var(--snow-blue); text-align: center; }
+    .nav-blade hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 0.75rem 0; }
+    .nav-blade .nav-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--dim); margin: 0.75rem 0 0.4rem; font-weight: 700; }
+    .nav-blade a { display: block; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.82rem; color: var(--muted); margin: 0.15rem 0; transition: all 0.2s; }
+    .nav-blade a:hover, .nav-blade a.active { background: rgba(41,181,232,0.1); color: white; }
+    .nav-blade .nav-footer { position: absolute; bottom: 1rem; left: 1rem; right: 1rem; }
+    .nav-blade .status { font-size: 0.7rem; color: var(--green); font-weight: 700; }
+    .nav-blade .version { font-size: 0.65rem; color: var(--dim); margin-top: 0.2rem; }
+
+    .nav-toggle { position: fixed; top: 1rem; left: 230px; z-index: 101; background: var(--card); border: 1px solid var(--border); color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: left 0.3s ease; }
+    .nav-toggle.shifted { left: 10px; }
+    .main-content { margin-left: 220px; transition: margin-left 0.3s ease; }
+    .main-content.expanded { margin-left: 0; }
+
+    /* ---- SECTION NAV ---- */
+    .section-nav { position: sticky; top: 0; z-index: 50; background: rgba(14,17,23,0.95); backdrop-filter: blur(8px); padding: 0.6rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+    .section-nav a { color: var(--snow-blue); }
+    .section-nav .current { color: var(--muted); font-size: 0.8rem; }
+
+    /* ---- COVER ---- */
+    .cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; background: linear-gradient(135deg, #0E1117 0%, #11567F 40%, #29B5E8 100%); position: relative; overflow: hidden; }
+    .cover::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #29B5E8, #00D4AA, #667eea, #29B5E8); background-size: 300% 100%; animation: shimmer 3s ease-in-out infinite; }
+    @keyframes shimmer { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .cover .snowflake { font-size: 4rem; margin-bottom: 1rem; }
+    .cover h1 { font-size: 3rem; font-weight: 900; margin-bottom: 0.5rem; letter-spacing: -1px; }
+    .cover .tagline { font-size: 1.5rem; font-weight: 300; color: #94A3B8; margin-bottom: 0.5rem; }
+    .cover .subtitle { font-size: 1.1rem; color: #64748B; margin-bottom: 2rem; }
+    .cover .audience { display: inline-block; padding: 0.6rem 1.5rem; border: 2px solid rgba(41,181,232,0.4); border-radius: 50px; color: var(--snow-blue); font-weight: 700; }
+    .cover-meta { margin-top: 2rem; color: #475569; font-size: 0.9rem; }
+
+    /* ---- CONTENT ---- */
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+    section { padding: 1rem 0; scroll-margin-top: 60px; }
+    h2 { font-size: 1.8rem; font-weight: 900; color: var(--snow-blue); margin-bottom: 1rem; border-bottom: 2px solid var(--snow-dark); padding-bottom: 0.5rem; }
+    h3 { font-size: 1.3rem; font-weight: 700; margin: 1.2rem 0 0.5rem; color: #CBD5E1; }
+    h4 { font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0 0.3rem; color: #B0BEC5; }
+    p { margin: 0.5rem 0; }
+
+    .card { background: var(--card); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid var(--border); color: #E2E8F0; }
+    .card td, .card p, .card li, .card span:not(.pill):not(.step-action) { color: #CBD5E1; }
+    .card-highlight { background: rgba(41,181,232,0.08); border-color: rgba(41,181,232,0.3); }
+
+    /* ---- CALLOUTS ---- */
+    .talk-track { background: linear-gradient(135deg, rgba(129,140,248,0.1), rgba(41,181,232,0.1)); border-left: 4px solid var(--accent); padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 0.75rem 0; font-style: italic; color: #C4B5FD; }
+    .talk-track::before { content: 'SAY: '; font-style: normal; font-weight: 700; color: var(--accent); }
+    .insight { background: rgba(16,185,129,0.08); border-left: 4px solid #10B981; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 0.75rem 0; color: #A7F3D0; }
+    .insight::before { content: 'KEY INSIGHT: '; font-weight: 700; color: #10B981; }
+    .cta-box { background: rgba(245,158,11,0.08); border-left: 4px solid #F59E0B; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 0.75rem 0; color: #FDE68A; }
+    .cta-box::before { content: 'CLOSE: '; font-weight: 700; color: #F59E0B; }
+    .warning-box { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 0.75rem 0; color: #FCA5A5; }
+    .warning-box::before { content: 'DO NOT: '; font-weight: 700; color: #EF4444; }
+
+    /* ---- DEMO STEPS ---- */
+    .demo-step { display: flex; gap: 1rem; margin: 0.75rem 0; align-items: flex-start; }
+    .step-num { min-width: 36px; height: 36px; background: var(--snow-dark); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+    .step-content { flex: 1; }
+    .step-action { font-weight: 700; color: var(--snow-blue); }
+    .step-detail { color: #B0BEC5; font-size: 0.9rem; margin-top: 0.2rem; }
+
+    /* ---- TABLES ---- */
+    table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.9rem; }
+    th { background: var(--snow-dark); color: white; padding: 0.65rem; text-align: left; font-weight: 700; }
+    td { padding: 0.55rem 0.65rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: #CBD5E1; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+
+    /* ---- TIMELINE ---- */
+    .timeline { display: flex; justify-content: space-between; margin: 1.5rem 0; position: relative; }
+    .timeline::before { content: ''; position: absolute; top: 18px; left: 40px; right: 40px; height: 3px; background: linear-gradient(90deg, var(--snow-dark), var(--snow-blue), var(--green)); }
+    .timeline-item { text-align: center; position: relative; z-index: 1; flex: 1; }
+    .timeline-dot { width: 36px; height: 36px; background: var(--snow-dark); border: 3px solid var(--snow-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem; font-weight: 700; font-size: 0.8rem; color: white; }
+    .timeline-label { font-size: 0.75rem; color: #B0BEC5; }
+    .timeline-time { font-size: 0.7rem; color: #8899A6; margin-top: 0.2rem; }
+
+    /* ---- METRICS ---- */
+    .metric-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.8rem; margin: 1rem 0; }
+    .metric-box { background: var(--card); border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
+    .metric-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #29B5E8, #00D4AA); }
+    .metric-box .value { font-size: 1.4rem; font-weight: 900; color: var(--snow-blue); }
+    .metric-box .label { font-size: 0.7rem; color: #B0BEC5; margin-top: 0.2rem; }
+
+    /* ---- PILLS ---- */
+    .pill { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; margin: 0.15rem; }
+    .pill-blue { background: rgba(41,181,232,0.15); color: var(--snow-blue); }
+    .pill-green { background: rgba(16,185,129,0.15); color: #10B981; }
+    .pill-purple { background: rgba(129,140,248,0.15); color: #818CF8; }
+    .pill-orange { background: rgba(245,158,11,0.15); color: #F59E0B; }
+
+    /* ---- MISC ---- */
+    .highlight { color: var(--snow-blue); font-weight: 700; }
+    .footer { text-align: center; padding: 2rem; color: #8899A6; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 2rem; }
+    .time-badge { display: inline-block; background: var(--snow-dark); color: var(--snow-blue); font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 50px; margin-left: 0.5rem; vertical-align: middle; }
+    .checklist-item { display: flex; align-items: flex-start; gap: 0.5rem; margin: 0.4rem 0; }
+    .checklist-item::before { content: '☐'; font-size: 1.1rem; color: var(--snow-blue); flex-shrink: 0; }
+    .checklist-item.done::before { content: '☑'; color: var(--green); }
+    .act-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .act-header .act-icon { font-size: 2rem; }
+    .act-header-text h2 { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+    .act-header-text .act-sub { font-size: 0.85rem; color: #B0BEC5; }
+    code { background: rgba(41,181,232,0.1); color: #7DD3FC; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+    .cover-meta p { color: #8899A6; }
+</style>
+</head>
+<body>
+
+<!-- NAV TOGGLE -->
+<button class="nav-toggle shifted" onclick="toggleNav()" id="navToggle">&#9776;</button>
+
+<!-- NAV BLADE -->
+<nav class="nav-blade collapsed" id="navBlade">
+    <div class="brand">
+        <div class="snowflake-icon">&#10052;</div>
+        <h3>SNOWFLAKE</h3>
+        <p>SOLUTION ENGINEERING</p>
+        <div class="divider"></div>
+    </div>
+    <div class="doc-title">15-Min Demo Guide</div>
+    <hr>
+    <div class="nav-label">GUIDE SECTIONS</div>
+    <a href="#cover" class="active" data-section="cover">&#9632; Cover</a>
+    <a href="#overview" data-section="overview">Demo Overview</a>
+    <a href="#checklist" data-section="checklist">Pre-Demo Checklist</a>
+    <hr>
+    <div class="nav-label">DEMO FLOW</div>
+    <a href="#step1" data-section="step1">1 &mdash; Mission Control</a>
+    <a href="#step2" data-section="step2">2 &mdash; Trend Surveillance</a>
+    <a href="#step3" data-section="step3">3 &mdash; Contract Repricing</a>
+    <a href="#step4" data-section="step4">4 &mdash; Intelligence Agent</a>
+    <a href="#close" data-section="close">The Close</a>
+    <hr>
+    <div class="nav-label">REFERENCE</div>
+    <a href="#objections" data-section="objections">Objection Handling</a>
+    <a href="#reference" data-section="reference">Quick Reference</a>
+    <div class="nav-footer">
+        <div class="status">15 min | All Audiences</div>
+        <div class="version">v3.0 | March 2026</div>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main-content expanded" id="mainContent">
+
+<!-- Print Controls -->
+<div class="no-print" style="text-align: center; padding: 1.5rem; background: #FEF3C7; border-radius: 8px; border: 1px solid #F59E0B; margin: 1rem;">
+    <p style="margin-bottom: 1rem; font-weight: 600; color: #92400E;">
+        To save as PDF: Print &rarr; Destination: "Save as PDF" &rarr; Uncheck "Headers and footers" &rarr; Set margins to "Default"
+    </p>
+    <button onclick="window.print()" style="padding: 0.75rem 2rem; background: #11567F; color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-family: Lato; font-weight: 700;">Print / Save as PDF</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- COVER -->
+<!-- ============================================================ -->
+<section class="cover" id="cover">
+    <div class="snowflake">&#10052;</div>
+    <h1>Actuarial Command Center</h1>
+    <div class="tagline">AI-Powered Health Plan Intelligence</div>
+    <div class="subtitle">15-Minute Executive Demo Guide &mdash; Snowflake AI Data Cloud</div>
+    <div class="audience">Step-by-Step Presenter Guide</div>
+    <div class="cover-meta">
+        <p style="margin-top: 1rem;">Duration: <strong style="color: #E2E8F0;">Exactly 15 minutes</strong> &nbsp;|&nbsp; 4 Acts + Close</p>
+        <p>Narrative: BH Cost Spike &#8594; Anomaly Detection &#8594; Contract Repricing &#8594; AI Agent Resolution</p>
+        <p style="margin-top: 0.5rem;">Prepared by: Snowflake Solution Engineering &nbsp;|&nbsp; March 2026</p>
+    </div>
+</section>
+
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- DEMO OVERVIEW -->
+<!-- ============================================================ -->
+<section class="page-break" id="overview">
+    <h2>Demo Overview</h2>
+
+    <h3>The Story You Are Telling</h3>
+    <p>A health plan's actuarial team discovers a <strong>behavioral health cost spike in Texas</strong> through automated anomaly detection, quantifies the margin impact on the Executive Summary, models a contract repricing scenario to fix it, and then asks an AI agent to synthesize everything into a CFO-ready briefing&mdash;all without leaving Snowflake.</p>
+
+    <div class="insight">Every demo must follow a single narrative thread. The TX Behavioral Health spike is the thread that connects every page. Do not jump between unrelated topics.</div>
+
+    <h3>What You Are Demonstrating</h3>
+    <div class="metric-grid">
+        <div class="metric-box"><div class="value">800K+</div><div class="label">Synthetic Claims</div></div>
+        <div class="metric-box"><div class="value">9 Pages</div><div class="label">Streamlit App</div></div>
+        <div class="metric-box"><div class="value">1</div><div class="label">Semantic View</div></div>
+        <div class="metric-box"><div class="value">2 Tools</div><div class="label">Cortex Agent</div></div>
+        <div class="metric-box"><div class="value">0</div><div class="label">Data Leaves Platform</div></div>
+    </div>
+
+    <h3>Snowflake Capabilities Shown</h3>
+    <div class="card">
+        <table>
+            <tr><th>Capability</th><th>Where It Appears</th><th>What to Say</th></tr>
+            <tr><td><span class="pill pill-blue">Dynamic Tables</span></td><td>Architecture (mention at Step 1)</td><td>"Continuous pipeline, no ETL scheduling"</td></tr>
+            <tr><td><span class="pill pill-blue">Semantic View</span></td><td>Every page + Agent</td><td>"CFO, actuary, and AI read the same governed truth"</td></tr>
+            <tr><td><span class="pill pill-purple">Cortex ML</span></td><td>Trend Surveillance (Step 2)</td><td>"Anomaly detection running continuously"</td></tr>
+            <tr><td><span class="pill pill-purple">Cortex Search</span></td><td>Intelligence Agent (Step 4)</td><td>"RAG over provider contracts, entirely in Snowflake"</td></tr>
+            <tr><td><span class="pill pill-purple">Cortex Agent</span></td><td>Intelligence Agent (Step 4)</td><td>"Multi-tool agent: data + documents in one answer"</td></tr>
+            <tr><td><span class="pill pill-green">Streamlit in Snowflake</span></td><td>Entire app</td><td>"Data never leaves the platform"</td></tr>
+            <tr><td><span class="pill pill-green">Stored Procedures</span></td><td>Contract Repricing (Step 3)</td><td>"Serverless Python running inside Snowflake"</td></tr>
+        </table>
+    </div>
+
+    <h3>Demo Flow &mdash; 15 Minutes</h3>
+    <div class="timeline">
+        <div class="timeline-item"><div class="timeline-dot">1</div><div class="timeline-label">Mission Control</div><div class="timeline-time">3 min</div></div>
+        <div class="timeline-item"><div class="timeline-dot">2</div><div class="timeline-label">Trend Surveillance</div><div class="timeline-time">3 min</div></div>
+        <div class="timeline-item"><div class="timeline-dot">3</div><div class="timeline-label">Repricing</div><div class="timeline-time">4 min</div></div>
+        <div class="timeline-item"><div class="timeline-dot">4</div><div class="timeline-label">AI Agent</div><div class="timeline-time">3 min</div></div>
+        <div class="timeline-item"><div class="timeline-dot">&#10003;</div><div class="timeline-label">Close</div><div class="timeline-time">2 min</div></div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PRE-DEMO CHECKLIST -->
+<!-- ============================================================ -->
+<section class="page-break" id="checklist">
+    <h2>Pre-Demo Checklist</h2>
+
+    <div class="card card-highlight">
+        <h3>5 Minutes Before &mdash; Environment</h3>
+        <div class="checklist-item">Open Streamlit app in Snowsight: <strong>ACTUARIAL_DEMO.GOLD.ACTUARIAL_COMMAND_CENTER</strong></div>
+        <div class="checklist-item">Click through <strong>all 9 pages</strong> once to pre-warm caches (prevents loading spinners during demo)</div>
+        <div class="checklist-item">On the Home page, set the <strong>Audience toggle to "Executive"</strong></div>
+        <div class="checklist-item">Navigate back to the <strong>Home page</strong> (Mission Control) &mdash; this is your starting position</div>
+        <div class="checklist-item">Verify the <strong>proactive alert banner</strong> (TX BH cost spike) is visible on the Home page</div>
+        <div class="checklist-item">On the <strong>Intelligence Agent page</strong>, clear any previous chat messages</div>
+        <div class="checklist-item">Optionally open Snowsight in a <strong>second browser tab</strong> for showing raw SQL if asked</div>
+    </div>
+
+    <div class="card">
+        <h3>Browser Setup</h3>
+        <div class="checklist-item">Use <strong>Chrome or Edge</strong> (best Streamlit rendering)</div>
+        <div class="checklist-item">Set browser zoom to <strong>90%</strong> so full page fits without scrolling</div>
+        <div class="checklist-item">Close all other tabs and notifications</div>
+        <div class="checklist-item">If screen sharing: share the <strong>specific browser window</strong>, not entire screen</div>
+    </div>
+
+    <div class="card">
+        <h3>Demo Mode (No Snowflake Connection)</h3>
+        <p>The app works fully in <strong>Demo Mode</strong> using synthetic fallback data. If you cannot connect to Snowflake:</p>
+        <div class="checklist-item">Run locally: <code>streamlit run streamlit_app.py</code></div>
+        <div class="checklist-item">The connection status badge will show <strong>"Demo Mode (Local)"</strong> instead of "Snowflake Connected"</div>
+        <div class="checklist-item">All pages, charts, KPIs, and the Intelligence Agent work identically in demo mode</div>
+        <div class="checklist-item">The Contract Repricing stored procedure call is simulated locally with the same math</div>
+    </div>
+
+    <div class="card">
+        <h3>Know Your Audience</h3>
+        <table>
+            <tr><th>Audience</th><th>Emphasize</th><th>Skip / Minimize</th></tr>
+            <tr><td><strong>CFO / CAO</strong></td><td>MLR, margins, email composer, audit packages, IBNR mention</td><td>Architecture details, SQL</td></tr>
+            <tr><td><strong>Chief Actuary</strong></td><td>Chain-ladder IBNR, HCC scoring, repricing math, distributions</td><td>AI buzzwords</td></tr>
+            <tr><td><strong>CTO / CIO</strong></td><td>Platform consolidation, Dynamic Tables, governance, Semantic View</td><td>Actuarial formulas</td></tr>
+            <tr><td><strong>VP Data &amp; Analytics</strong></td><td>Semantic View governance, Cortex ML, agent architecture, action UX</td><td>Insurance regulatory specifics</td></tr>
+        </table>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- STEP 1: MISSION CONTROL + EXECUTIVE SUMMARY -->
+<!-- ============================================================ -->
+<section class="page-break" id="step1">
+    <div class="act-header">
+        <div class="act-icon">&#128202;</div>
+        <div class="act-header-text">
+            <h2>Step 1: Mission Control &amp; Executive Summary <span class="time-badge">0:00 &ndash; 3:00</span></h2>
+            <div class="act-sub">Pages: Home (Mission Control) &rarr; Executive Summary &nbsp;|&nbsp; Goal: Anchor the narrative, establish the problem</div>
+        </div>
+    </div>
+
+    <h3>Home Page &mdash; Mission Control</h3>
+
+    <div class="talk-track">"Today I'm going to show you an actuarial command center built entirely on Snowflake. Everything you see&mdash;the data pipeline, the ML models, the dashboards, and the AI agent&mdash;runs inside the Snowflake AI Data Cloud. No data leaves the platform."</div>
+
+    <div class="demo-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <span class="step-action">Point to the 4 KPI tiles at the top of Mission Control</span>
+            <div class="step-detail">Health Plan Co.l Loss Ratio, Margin, Claims Processed (~800K), Cost PMPM. Say: "These are live from a governed Semantic View&mdash;the single source of truth."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <span class="step-action">Point to the orange/red proactive alert banner</span>
+            <div class="step-detail">It reads: <strong>TX Behavioral Health cost spike detected</strong>. Say: "Before we even started looking, the system flagged something. Cortex ML is running anomaly detection continuously. We're going to follow this thread."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <span class="step-action">Briefly point to the Quick Actions row (Draft CFO Briefing, Audit Package, Run Repricing)</span>
+            <div class="step-detail">Say: "Every section of this app has actions&mdash;not just charts to look at. You can draft emails, build audit packages, or run scenarios."</div>
+        </div>
+    </div>
+
+    <h3>Executive Summary Page</h3>
+
+    <div class="demo-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <span class="step-action">Click "Executive Summary" in the left nav blade (or use the demo workflow tiles)</span>
+            <div class="step-detail">This page opens with enterprise-wide financial KPIs.</div>
+        </div>
+    </div>
+
+    <div class="talk-track">"This is the CFO's Monday morning view. Health Plan Co.l Loss Ratio across the book, margin by line of business, anomaly alerts, and trend charts&mdash;all governed by the same Semantic View the AI agent uses."</div>
+
+    <div class="demo-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+            <span class="step-action">Point to the MLR by LOB tiles</span>
+            <div class="step-detail">Highlight any LOB near or above the ACA threshold. Say: "ACA requires 80% MLR for individual and small group, 85% for large group. Below that, we owe rebates. Above that, we're watching margin."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+            <span class="step-action">Click "Email Summary" in the action bar</span>
+            <div class="step-detail">Show the pre-drafted email with data-backed insights. Say: "One click&mdash;a Cortex-drafted executive briefing ready to send." Close the composer after a brief pause.</div>
+        </div>
+    </div>
+
+    <div class="insight">Anchor the demo: the audience should now understand this is a <strong>real working application</strong> with governed data, not a set of mockup slides. The TX BH alert is the hook&mdash;carry it forward.</div>
+
+    <div class="warning-box">Do NOT spend time on the Architecture page at this point. If asked, say "I'll show you that at the end" or briefly toggle to Technical mode to show the pipeline diagram.</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- STEP 2: TREND SURVEILLANCE -->
+<!-- ============================================================ -->
+<section class="page-break" id="step2">
+    <div class="act-header">
+        <div class="act-icon">&#128270;</div>
+        <div class="act-header-text">
+            <h2>Step 2: Trend Surveillance &mdash; The Early Warning <span class="time-badge">3:00 &ndash; 6:00</span></h2>
+            <div class="act-sub">Page: Trend Surveillance &nbsp;|&nbsp; Goal: Show Cortex ML anomaly detection, build urgency</div>
+        </div>
+    </div>
+
+    <div class="talk-track">"We saw the alert on the home page. Let's dig into what the system actually found."</div>
+
+    <div class="demo-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <span class="step-action">Click "Trend Surveillance" in the nav blade</span>
+            <div class="step-detail">The page opens with Cortex ML anomaly alerts at the top and cost trend charts below.</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <span class="step-action">Point to the anomaly alert card for TX Behavioral Health</span>
+            <div class="step-detail">Say: "Cortex ML's anomaly detection model runs continuously on every state-service category combination. It caught behavioral health costs in Texas tracking about <strong>8% above the expected range</strong>."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <span class="step-action">Scroll to the cost trend chart by service category</span>
+            <div class="step-detail">Point to the behavioral health line trending upward. Say: "You can see the divergence starting here. Without anomaly detection, this wouldn't surface until month-end close&mdash;weeks of lost margin."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <span class="step-action">Show the Texas Behavioral Health deep dive section</span>
+            <div class="step-detail">Root cause analysis with cost drivers. Say: "The system doesn't just flag the problem&mdash;it shows you what's driving it."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+            <span class="step-action">(Optional, if time) Click "Create Alert Rule" to show the rule builder UI</span>
+            <div class="step-detail">Briefly show state/category/threshold selectors. Say: "Actuaries can set their own monitoring rules."</div>
+        </div>
+    </div>
+
+    <div class="talk-track">"So now we know: Texas behavioral health costs are running hot. The question is&mdash;what can we do about it? That's where contract repricing comes in."</div>
+
+    <div class="insight">This is the narrative bridge. The anomaly was <strong>detected by Cortex ML</strong>, not by a human looking at a report. Emphasize the proactive, continuous nature.</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- STEP 3: CONTRACT REPRICING -->
+<!-- ============================================================ -->
+<section class="page-break" id="step3">
+    <div class="act-header">
+        <div class="act-icon">&#128176;</div>
+        <div class="act-header-text">
+            <h2>Step 3: Contract Repricing &mdash; The Wow Moment <span class="time-badge">6:00 &ndash; 10:00</span></h2>
+            <div class="act-sub">Page: Contract Repricing &nbsp;|&nbsp; Goal: Interactive "what-if" that gets a reaction</div>
+        </div>
+    </div>
+
+    <div class="talk-track">"We found the spike. Now let's model what happens if we renegotiate the Texas provider contract. This runs a Python stored procedure live inside Snowflake."</div>
+
+    <div class="demo-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <span class="step-action">Click "Contract Repricing" in the nav blade</span>
+            <div class="step-detail">The page loads with the repricing controls on the left and results on the right.</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <span class="step-action">Set Target State to "TX" (Texas)</span>
+            <div class="step-detail">The state selector should already default to TX or be easily selectable.</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <span class="step-action">Slide the Basis Point Adjustment slider to <strong>-200 BPS</strong></span>
+            <div class="step-detail">Say: "A negative 200 basis point adjustment means we're asking for a 2% reduction in reimbursement rates. Watch the before-and-after KPIs update." Point to: current vs. repriced paid amount, MLR impact, and margin change.</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <span class="step-action">Point to the IP/OP pass-through percentages</span>
+            <div class="step-detail">Say: "Inpatient gets 100% of the rate change, outpatient gets 50%. This mirrors how real contract amendments work&mdash;you negotiate different rates for different service types."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+            <span class="step-action">Click "Save Scenario" to store this as Scenario 1</span>
+            <div class="step-detail">Say: "Save this scenario, then model a second one." Slide BPS to <strong>-350</strong>, save as Scenario 2. Point to the side-by-side comparison.</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+            <span class="step-action">Click "Negotiation Brief" in the action bar</span>
+            <div class="step-detail">Show the mock negotiation document. Say: "This pulls actual contract clauses from Cortex Search and combines them with the repricing data. Your network team walks into the negotiation with numbers AND contract language."</div>
+        </div>
+    </div>
+
+    <div class="talk-track">"This is the moment in the demo where heads nod. Every health plan does this in Excel with stale data. Here it's live, on real claim volume, with the contract terms right there."</div>
+
+    <div class="insight">The "wow" is the <strong>interactivity and speed</strong>. Slide, see results, compare scenarios, generate a brief&mdash;all in seconds. Do NOT rush through this. Let the audience absorb the before/after numbers.</div>
+
+    <div class="warning-box">Avoid going deeper than 2 scenarios. The side-by-side comparison is the payoff. More than 2 scenarios dilutes the impact.</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- STEP 4: INTELLIGENCE AGENT -->
+<!-- ============================================================ -->
+<section class="page-break" id="step4">
+    <div class="act-header">
+        <div class="act-icon">&#129302;</div>
+        <div class="act-header-text">
+            <h2>Step 4: Intelligence Agent &mdash; The CFO Bridge <span class="time-badge">10:00 &ndash; 13:00</span></h2>
+            <div class="act-sub">Page: Intelligence Agent &nbsp;|&nbsp; Goal: Show the Cortex Agent combining structured data + unstructured documents</div>
+        </div>
+    </div>
+
+    <div class="talk-track">"Now imagine it's Thursday afternoon and the CFO pings you: 'Why is Texas underperforming and what's our exposure?' Instead of pulling data from three systems and writing a memo, you just ask."</div>
+
+    <div class="demo-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <span class="step-action">Click "Intelligence Agent" in the nav blade</span>
+            <div class="step-detail">The chat interface opens with suggested questions in the sidebar and workflow templates.</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <span class="step-action">Type (or click the suggested question): <strong>"Why is our Texas margin missing the target, and what is our exposure?"</strong></span>
+            <div class="step-detail">This is the primary demo question. It triggers <strong>both</strong> agent tools: the Semantic View for financial data and Cortex Search for contract documents.</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <span class="step-action">Wait for the response, then walk through the answer</span>
+            <div class="step-detail">
+                Point out these elements in the response:
+                <br>&bull; <strong>Financial data</strong>: MLR, margin numbers from the Semantic View (same numbers as the Executive Summary page)
+                <br>&bull; <strong>Contract clauses</strong>: TX provider contract terms pulled from Cortex Search
+                <br>&bull; <strong>Synthesized recommendation</strong>: The agent combines both into an actionable answer
+            </div>
+        </div>
+    </div>
+
+    <div class="talk-track">"Look at what just happened. The agent searched actual provider contract documents stored in Snowflake and pulled back specific reimbursement rates. It didn't hallucinate them. It cited the source. This is RAG running entirely inside Snowflake. And the financial data came from the same governed Semantic View that powers the dashboards."</div>
+
+    <div class="demo-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <span class="step-action">Click "Email This" on the agent response</span>
+            <div class="step-detail">Show the email composer with the agent's analysis pre-filled. Say: "One click to turn that into a CFO briefing."</div>
+        </div>
+    </div>
+
+    <div class="demo-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+            <span class="step-action">(Optional, if time) Ask a follow-up: <strong>"What are the behavioral health reimbursement rates in the Texas contract?"</strong></span>
+            <div class="step-detail">This isolates the Cortex Search tool and shows contract RAG specifically. Good for technical audiences.</div>
+        </div>
+    </div>
+
+    <div class="insight">The dual-tool architecture (Semantic View + Cortex Search) is the key differentiator. Competitors offer BI dashboards OR document Q&A. Snowflake's Cortex Agent does <strong>both from one governed platform in a single answer</strong>.</div>
+
+    <h4>Backup Questions (if the audience wants to see more)</h4>
+    <div class="card">
+        <table>
+            <tr><th>Question</th><th>What It Shows</th></tr>
+            <tr><td>"Compare MLR across all lines of business"</td><td>Semantic View only &mdash; governed metrics query</td></tr>
+            <tr><td>"What is the MFN clause in the Texas contract?"</td><td>Cortex Search only &mdash; contract RAG</td></tr>
+            <tr><td>"What are the top 3 cost drivers this quarter?"</td><td>Semantic View &mdash; analytical reasoning</td></tr>
+            <tr><td>"Summarize the Minnesota provider contract"</td><td>Cortex Search &mdash; document summarization</td></tr>
+        </table>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- THE CLOSE -->
+<!-- ============================================================ -->
+<section class="page-break" id="close">
+    <div class="act-header">
+        <div class="act-icon">&#127919;</div>
+        <div class="act-header-text">
+            <h2>The Close <span class="time-badge">13:00 &ndash; 15:00</span></h2>
+            <div class="act-sub">Goal: Tie the thread, show the "Before vs. After", ask for next steps</div>
+        </div>
+    </div>
+
+    <div class="talk-track">"Let me bring it full circle. We started with an alert&mdash;Texas behavioral health costs spiking. We drilled into what caused it. We modeled a contract repricing to fix it. And we asked an AI agent to synthesize the whole story into something a CFO can act on. That's a workflow that used to take a week across five different tools. We just did it in fifteen minutes on one platform."</div>
+
+    <h3>The Before and After</h3>
+    <div class="card card-highlight">
+        <table>
+            <tr><th>Capability</th><th>Before (Legacy)</th><th>After (Snowflake)</th></tr>
+            <tr><td><strong>Claims Pipeline</strong></td><td>Nightly batch ETL, 8&ndash;12 hr lag</td><td>Dynamic Tables, continuous refresh</td></tr>
+            <tr><td><strong>Financial Metrics</strong></td><td>Spreadsheets, email attachments, version conflicts</td><td>Semantic View, one governed truth</td></tr>
+            <tr><td><strong>Trend Detection</strong></td><td>Month-end reports, weeks of retroactive discovery</td><td>Cortex ML anomaly detection, proactive alerts</td></tr>
+            <tr><td><strong>Contract Repricing</strong></td><td>Excel models with stale data, days of prep</td><td>Live repricing on real claim volume, instant scenarios</td></tr>
+            <tr><td><strong>Contract Analysis</strong></td><td>Manual PDF review, legal bottleneck</td><td>Cortex Search + LLM, instant RAG</td></tr>
+            <tr><td><strong>CFO Briefings</strong></td><td>Copy-paste from 3 systems into email</td><td>AI agent + one-click email composer</td></tr>
+        </table>
+    </div>
+
+    <div class="cta-box">"Everything you saw today is available in the Snowflake AI Data Cloud right now. We built this in days, not months. I'd love to discuss what a proof of concept would look like with your actual claims data. What questions do you have?"</div>
+
+    <h3>Transition to Q&amp;A</h3>
+    <p>If no questions come immediately, seed the conversation:</p>
+    <div class="card">
+        <div class="demo-step">
+            <div class="step-num">?</div>
+            <div class="step-content">
+                <span class="step-action">"Which of these capabilities would have the biggest impact on your team today?"</span>
+                <div class="step-detail">Opens a consultative conversation. Common answers: repricing, IBNR reserves, or the AI agent.</div>
+            </div>
+        </div>
+        <div class="demo-step">
+            <div class="step-num">?</div>
+            <div class="step-content">
+                <span class="step-action">"How does your team currently handle IBNR reserve calculations?"</span>
+                <div class="step-detail">Good for Chief Actuary audiences. You can briefly navigate to the IBNR page to show chain-ladder if interest is high.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- OBJECTION HANDLING -->
+<!-- ============================================================ -->
+<section class="page-break" id="objections">
+    <h2>Objection Handling</h2>
+
+    <div class="card">
+        <table>
+            <tr><th style="width: 30%;">Objection</th><th>Response</th></tr>
+            <tr>
+                <td><strong>"This is synthetic data"</strong></td>
+                <td>"By design for compliance. The distributions are actuarially accurate&mdash;Gamma for outpatient, Lognormal for inpatient, Box-Muller transforms. We use APCD-CDL v3.0.1 standards. In a POC we'd replicate this with your actual claims data."</td>
+            </tr>
+            <tr>
+                <td><strong>"We already have a BI tool"</strong></td>
+                <td>"This doesn't replace BI. The Semantic View means Tableau, Power BI, or Sigma all get the same governed truth. What BI can't do is the AI agent, anomaly detection, and one-click actions you just saw."</td>
+            </tr>
+            <tr>
+                <td><strong>"How does the AI agent avoid hallucination?"</strong></td>
+                <td>"Two safeguards: (1) the Semantic View constrains it to governed metrics with defined calculations, and (2) Cortex Search returns actual document chunks with citations, not generated text. The agent reasons over real data."</td>
+            </tr>
+            <tr>
+                <td><strong>"What about HIPAA / data governance?"</strong></td>
+                <td>"Data never leaves the Snowflake security perimeter. The Streamlit app, the ML models, and the AI agent all run inside Snowflake. Role-based access, column masking, and audit trails are built in."</td>
+            </tr>
+            <tr>
+                <td><strong>"Can this scale to our volume?"</strong></td>
+                <td>"This demo runs 800K claims on an X-Small warehouse. Snowflake's elastic compute means you scale the warehouse, not the architecture. Dynamic Tables handle the pipeline. Same code, any volume."</td>
+            </tr>
+            <tr>
+                <td><strong>"How long to build this?"</strong></td>
+                <td>"The foundation&mdash;data model, dynamic tables, semantic view&mdash;is days. The Streamlit app is a week. The AI agent is hours once the Semantic View and Cortex Search service exist. The hard part is your data, not our platform."</td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- QUICK REFERENCE -->
+<!-- ============================================================ -->
+<section class="page-break" id="reference">
+    <h2>Quick Reference</h2>
+
+    <h3>App Pages at a Glance</h3>
+    <div class="card">
+        <table>
+            <tr><th>#</th><th>Page</th><th>Key Feature</th><th>In This Demo?</th></tr>
+            <tr><td>0</td><td>Home (Mission Control)</td><td>KPI tiles, proactive alerts, quick actions</td><td><span class="pill pill-green">Step 1</span></td></tr>
+            <tr><td>1</td><td>Executive Summary</td><td>MLR by LOB, anomaly alerts, email composer</td><td><span class="pill pill-green">Step 1</span></td></tr>
+            <tr><td>2</td><td>Margin Forecast</td><td>MLR tracking vs ACA targets, IBNR adjustments</td><td><span class="pill pill-orange">Q&amp;A only</span></td></tr>
+            <tr><td>3</td><td>Risk Adjustment</td><td>CMS-HCC v28 RAF scoring, coding gap analysis</td><td><span class="pill pill-orange">Q&amp;A only</span></td></tr>
+            <tr><td>4</td><td>Claims Analytics</td><td>Cost distributions, high-cost claims, stop-loss</td><td><span class="pill pill-orange">Q&amp;A only</span></td></tr>
+            <tr><td>5</td><td>IBNR Reserves</td><td>Chain-ladder, run-off triangle, reserve opinion</td><td><span class="pill pill-orange">Q&amp;A only</span></td></tr>
+            <tr><td>6</td><td>Contract Repricing</td><td>BPS slider, scenario comparison, negotiation brief</td><td><span class="pill pill-green">Step 3</span></td></tr>
+            <tr><td>7</td><td>Trend Surveillance</td><td>Cortex ML anomalies, alert rule builder</td><td><span class="pill pill-green">Step 2</span></td></tr>
+            <tr><td>8</td><td>Intelligence Agent</td><td>Cortex Agent, Semantic View + Contract Search</td><td><span class="pill pill-green">Step 4</span></td></tr>
+            <tr><td>9</td><td>Architecture</td><td>Interactive SVG diagram, object inventory</td><td><span class="pill pill-orange">Q&amp;A only</span></td></tr>
+        </table>
+    </div>
+
+    <h3>Key Metrics to Know</h3>
+    <div class="card">
+        <table>
+            <tr><th>Metric</th><th>Definition</th><th>ACA Threshold</th></tr>
+            <tr><td><strong>MLR</strong> (Health Plan Co.l Loss Ratio)</td><td>Health Plan Co.l Expense / Premium Revenue</td><td>80% individual/small group, 85% large group</td></tr>
+            <tr><td><strong>PMPM</strong></td><td>Per Member Per Month cost</td><td>N/A &mdash; trend indicator</td></tr>
+            <tr><td><strong>RAF</strong> (Risk Adjustment Factor)</td><td>CMS-HCC risk score, drives MA revenue</td><td>1.0 = average risk</td></tr>
+            <tr><td><strong>IBNR</strong></td><td>Incurred But Not Reported reserves</td><td>Largest liability on balance sheet</td></tr>
+            <tr><td><strong>BPS</strong> (Basis Points)</td><td>1 BPS = 0.01% rate change</td><td>-200 BPS = 2% reduction</td></tr>
+        </table>
+    </div>
+
+    <h3>Snowflake Objects</h3>
+    <div class="card">
+        <table>
+            <tr><th>Object</th><th>Location</th></tr>
+            <tr><td>Database</td><td><code>ACTUARIAL_DEMO</code></td></tr>
+            <tr><td>Schemas</td><td><code>RAW</code>, <code>SILVER</code>, <code>GOLD</code>, <code>ANALYTICS</code>, <code>AGENTS</code></td></tr>
+            <tr><td>Warehouse</td><td><code>ACTUARIAL_WH</code> (X-Small, auto-suspend 60s)</td></tr>
+            <tr><td>Streamlit App</td><td><code>ACTUARIAL_DEMO.GOLD.ACTUARIAL_COMMAND_CENTER</code></td></tr>
+            <tr><td>Semantic View</td><td><code>GOLD.ACTUARIAL_FINANCIAL_TRUTH</code></td></tr>
+            <tr><td>Cortex Agent</td><td><code>AGENTS.ACTUARIAL_INTELLIGENCE_AGENT</code></td></tr>
+            <tr><td>Cortex Search</td><td><code>AGENTS.CONTRACT_SEARCH_SERVICE</code></td></tr>
+            <tr><td>Repricing Procedure</td><td><code>GOLD.REPRICE_CONTRACT(bps, state, provider)</code></td></tr>
+            <tr><td>Deploy Config</td><td><code>snowflake.yml</code> (definition_version: 2)</td></tr>
+        </table>
+    </div>
+
+    <h3>SQL Setup Scripts (Run in Order)</h3>
+    <div class="card">
+        <table>
+            <tr><th>Script</th><th>What It Creates</th></tr>
+            <tr><td><code>01_data_foundation.sql</code></td><td>Database, schemas, warehouse, role, stages, grants</td></tr>
+            <tr><td><code>02_synthetic_data_generation.sql</code></td><td>800K+ claims, 10K members, enrollment, financial summary</td></tr>
+            <tr><td><code>03_dynamic_tables.sql</code></td><td>SILVER and GOLD layer transformations (medallion pipeline)</td></tr>
+            <tr><td><code>04_semantic_view.sql</code></td><td>GOLD.ACTUARIAL_FINANCIAL_TRUTH semantic view</td></tr>
+            <tr><td><code>05_cortex_ml.sql</code></td><td>Anomaly detection + forecasting models</td></tr>
+            <tr><td><code>06_cortex_agent.sql</code></td><td>Contract chunks, search service, intelligence agent</td></tr>
+            <tr><td><code>07_contract_repricing.sql</code></td><td>REPRICE_CONTRACT stored procedure</td></tr>
+        </table>
+    </div>
+
+    <h3>Demo Narrative Cheat Sheet</h3>
+    <div class="card card-highlight">
+        <table>
+            <tr><th>Minute</th><th>Page</th><th>Action</th><th>One-Liner</th></tr>
+            <tr><td>0:00</td><td>Home</td><td>KPIs + alert banner</td><td>"The system already found a problem"</td></tr>
+            <tr><td>1:30</td><td>Exec Summary</td><td>LOB tiles + email</td><td>"CFO's Monday morning view"</td></tr>
+            <tr><td>3:00</td><td>Trend Surveillance</td><td>TX BH anomaly + trend charts</td><td>"Cortex ML caught it before month-end"</td></tr>
+            <tr><td>6:00</td><td>Contract Repricing</td><td>-200 BPS + save scenario</td><td>"Model the fix on real claims, instantly"</td></tr>
+            <tr><td>8:00</td><td>Contract Repricing</td><td>-350 BPS + negotiation brief</td><td>"Walk into the negotiation prepared"</td></tr>
+            <tr><td>10:00</td><td>Intelligence Agent</td><td>"Why is TX margin missing?"</td><td>"Data + documents in one AI answer"</td></tr>
+            <tr><td>12:00</td><td>Intelligence Agent</td><td>Email the response</td><td>"One click to brief the CFO"</td></tr>
+            <tr><td>13:00</td><td>&mdash;</td><td>Before/After table</td><td>"Five tools replaced by one platform"</td></tr>
+            <tr><td>15:00</td><td>&mdash;</td><td>Ask for next steps</td><td>"What would a POC look like with your data?"</td></tr>
+        </table>
+    </div>
+</section>
+
+</div><!-- end container -->
+
+<div class="footer">
+    <p>&#10052; Snowflake Solution Engineering &nbsp;|&nbsp; Actuarial Command Center Demo Guide v3.0 &nbsp;|&nbsp; March 2026</p>
+    <p style="margin-top: 0.3rem; font-size: 0.75rem; color: #8899A6;">Confidential &mdash; For Snowflake internal and customer demonstration use only</p>
+</div>
+
+</div><!-- end main-content -->
+
+<script>
+// Nav blade toggle
+function toggleNav() {
+    const blade = document.getElementById('navBlade');
+    const main = document.getElementById('mainContent');
+    const toggle = document.getElementById('navToggle');
+    blade.classList.toggle('collapsed');
+    main.classList.toggle('expanded');
+    toggle.classList.toggle('shifted');
+}
+
+// Active nav tracking
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav-blade a[data-section]');
+    const sections = document.querySelectorAll('section[id]');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => link.classList.remove('active'));
+                const activeLink = document.querySelector(`.nav-blade a[data-section="${entry.target.id}"]`);
+                if (activeLink) activeLink.classList.add('active');
+                const currentEl = document.getElementById('currentSection');
+                if (currentEl) currentEl.textContent = entry.target.querySelector('h2')?.textContent || '';
+            }
+        });
+    }, { threshold: 0.3 });
+
+    sections.forEach(section => observer.observe(section));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+definition_version: 2
+entities:
+  actuarial_command_center:
+    type: streamlit
+    identifier:
+      name: ACTUARIAL_COMMAND_CENTER
+      database: ACTUARIAL_DEMO
+      schema: GOLD
+    title: "Actuarial Command Center"
+    main_file: streamlit_app.py
+    pages_dir: pages
+    query_warehouse: ACTUARIAL_WH
+    stage: ACTUARIAL_DEMO.RAW.EXPORT_STAGE
+    artifacts:
+      - streamlit_app.py
+      - environment.yml
+      - pages/
+      - utils/
+      - .streamlit/
+      - snowflake_bug.png
+      - DEMO_GUIDE.html

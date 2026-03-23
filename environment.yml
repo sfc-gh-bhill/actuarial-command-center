@@ -1,0 +1,11 @@
+name: actuarial_command_center
+channels:
+  - snowflake
+dependencies:
+  - pandas
+  - snowflake-snowpark-python
+  - streamlit
+  - plotly
+  - scipy
+  - numpy
+  - xlsxwriter
