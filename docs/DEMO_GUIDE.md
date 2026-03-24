@@ -10,13 +10,13 @@
 
 ## Pre-Demo Setup Checklist
 
-- [ ] Log in to Snowflake at `https://app.snowflake.com/YOUR_ORG/YOUR_ACCOUNT/`
+- [ ] Log in to your Snowflake account (e.g. `https://app.snowflake.com/<YOUR_ORG>/<YOUR_ACCOUNT>/`)
 - [ ] Navigate to **Streamlit Apps > ACTUARIAL_DEMO.GOLD.ACTUARIAL_COMMAND_CENTER**
 - [ ] Clear any saved scenarios in Contract Repricing (fresh start)
 - [ ] Ensure warehouse `ACTUARIAL_WH` is active (auto-resumes on query)
 - [ ] Have a second browser tab open to Snowsight for "peek behind the curtain" moments
-- [ ] Optional: Give Patrick Kovalik credentials for live audience follow-along:
-  - **User:** `PKOVALIK` | **Password:** `ActuarialDemo2026!!`
+- [ ] Optional: Create a demo user for live audience follow-along:
+  - **User:** `<DEMO_USER>` | **Password:** `<SET_TEMP_PASSWORD>`
   - **Role:** `ACTUARIAL_DEMO_USER` | **Network:** Open (any IP)
 
 ---
