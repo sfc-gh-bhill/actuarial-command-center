@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: Apache-2.0
+-- Copyright 2026 Braedon Hill
+
 -- ==============================================================================
 -- ACTUARIAL DEMO - CONTRACT REPRICING STORED PROCEDURE
 -- The "Wow Moment": Interactive slider drives real-time repricing

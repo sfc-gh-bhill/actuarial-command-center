@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 7: INTELLIGENCE AGENT
 # Cortex Agent combining Semantic View (structured) + Contract RAG (unstructured)

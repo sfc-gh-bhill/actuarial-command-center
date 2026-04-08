@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # CENTRALIZED DATA CACHE — Shared session-level caching for performance at scale
 # All data loaders cached at session level with TTL. Pages import from here

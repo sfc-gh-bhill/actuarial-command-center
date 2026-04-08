@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # ACTUARIAL COMMAND CENTER — HOME / MISSION CONTROL
 # Futuristic command center with proactive alerts, quick actions, and nav blade

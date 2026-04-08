@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 5: CONTRACT REPRICING - "The Wow Moment"
 # Interactive repricing simulation with adjustable parameters,

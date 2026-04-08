@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: Apache-2.0
+-- Copyright 2026 Braedon Hill
+
 -- ==============================================================================
 -- ACTUARIAL DEMO - CORTEX ML (Anomaly Detection + Forecasting)
 -- ==============================================================================

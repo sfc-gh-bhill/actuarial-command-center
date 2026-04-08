@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 3: CLAIMS ANALYTICS
 # High-cost claim analysis, service category drill-down, episode clustering

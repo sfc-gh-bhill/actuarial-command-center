@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: Apache-2.0
+-- Copyright 2026 Braedon Hill
+
 -- ==============================================================================
 -- ACTUARIAL DEMO - SEMANTIC VIEW (Truth Layer)
 -- Single source of truth for both Streamlit dashboard and Cortex Agent

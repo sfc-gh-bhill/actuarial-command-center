@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 9: DEMO GUIDE
 # Embedded 15-minute demo guide with download button

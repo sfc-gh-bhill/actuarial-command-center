@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 4: IBNR RESERVES
 # Claims lag triangles, completion factors, chain-ladder reserving

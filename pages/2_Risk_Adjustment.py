@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 2: RISK ADJUSTMENT
 # CMS-HCC v28 RAF scoring, revenue exposure, constrained coefficients

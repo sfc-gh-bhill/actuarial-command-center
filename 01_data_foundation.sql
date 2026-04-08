@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: Apache-2.0
+-- Copyright 2026 Braedon Hill
+
 -- ==============================================================================
 -- ACTUARIAL DEMO - DATA FOUNDATION
 -- Database, schemas, warehouse, stages, file formats, roles, and grants

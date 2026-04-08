@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # SHARED STYLES - Modern Dark Theme for Actuarial Command Center
 # Adapted from National Transplant Registry Clinical Framework design system

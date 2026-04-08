@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 0: EXECUTIVE SUMMARY
 # High-level anchor: MLR, margin, anomaly alerts across all LOBs

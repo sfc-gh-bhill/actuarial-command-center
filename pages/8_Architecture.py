@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 8: ARCHITECTURE
 # Visual architecture diagram with SVG, module data flows, and object inventory

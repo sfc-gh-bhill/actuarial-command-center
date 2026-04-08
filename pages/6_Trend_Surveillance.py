@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # PAGE 6: TREND SURVEILLANCE
 # Cortex ML anomaly detection - surfaces Texas BH cost spike

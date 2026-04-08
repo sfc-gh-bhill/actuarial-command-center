@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 from utils.styles import apply_styles, render_header, render_metric_card, render_alert_card, render_status_badge, render_sidebar_branding
 from utils.actions import (
     PAGE_REGISTRY,

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 # ==============================================================================
 # ACTIONS MODULE - Futuristic Action-Oriented UI Components
 # Export, email drafting, audit packages, code blocks, alerts
