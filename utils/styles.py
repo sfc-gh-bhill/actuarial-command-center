@@ -3,7 +3,7 @@
 
 # ==============================================================================
 # SHARED STYLES - Modern Dark Theme for Actuarial Command Center
-# Adapted from National Transplant Registry Clinical Framework design system
+# Adapted from clinical registry design system
 # ==============================================================================
 
 SHARED_CSS = """
